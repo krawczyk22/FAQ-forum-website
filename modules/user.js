@@ -21,6 +21,7 @@ module.exports = class User {
 
 	async register(user, pass) {
 		try {
+			if(user.length === 0 && pass.length === 0) throw new Error('missing username and password')
 			if(user.length === 0) throw new Error('missing username')
 			if(pass.length === 0) throw new Error('missing password')
 			let sql = `SELECT COUNT(id) as records FROM users WHERE user="${user}";`

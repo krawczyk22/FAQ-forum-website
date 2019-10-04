@@ -22,6 +22,14 @@ describe('register()', () => {
 		done()
 	})
 
+	test('error if blank username and password', async done => {
+		expect.assertions(1)
+		const account = await new Accounts()
+		await expect( account.register('', '') )
+			.rejects.toEqual( Error('missing username and password') )
+		done()
+	})
+
 	test('error if blank username', async done => {
 		expect.assertions(1)
 		const account = await new Accounts()
