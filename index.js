@@ -9,6 +9,7 @@ const bcrypt = require('bcrypt-promise')
 const Koa = require('koa')
 const Router = require('koa-router')
 const views = require('koa-views')
+const Database = require('sqlite-async')
 const staticDir = require('koa-static')
 const bodyParser = require('koa-bodyparser')
 const koaBody = require('koa-body')({multipart: true, uploadDir: '.'})
@@ -49,7 +50,13 @@ router.get('/', async ctx => {
 		if(ctx.session.authorised !== true) return ctx.redirect('/login?msg=you need to log in')
 		const data = {}
 		if(ctx.query.msg) data.msg = ctx.query.msg
-		await ctx.render('index')
+		const sql = 'SELECT title FROM questions;'
+		const db = await Database.open(dbName)
+		const datafromdatabase = await db.all(sql)
+		await db.close()
+		console.log(datafromdatabase)
+		await ctx.render('index', {title: 'Questions', titlesfromdatabase: datafromdatabase})
+		//await ctx.render('index')
 	} catch(err) {
 		await ctx.render('error', {message: err.message})
 	}
@@ -90,7 +97,13 @@ router.get('/login', async ctx => {
 	const data = {}
 	if(ctx.query.msg) data.msg = ctx.query.msg
 	if(ctx.query.user) data.user = ctx.query.user
-	await ctx.render('login', data)
+	const sql = 'SELECT title FROM questions;'
+	const db = await Database.open(dbName)
+	const datafromdatabase = await db.all(sql)
+	await db.close()
+	console.log(datafromdatabase)
+	await ctx.render('login', {title: 'Questions', titlesfromdatabase: datafromdatabase, data})
+	//await ctx.render('login', data)
 })
 
 router.post('/login', async ctx => {

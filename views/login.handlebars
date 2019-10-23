@@ -19,6 +19,15 @@
 			<p>Password:<br /><input type="password" name="pass" placeholder="your password" value=""></p>
 			<p><input type="submit" value="Log in"></p>
 		</form>
+		<header>
+			<h1>{{title}}</h1>
+		</header>
+		<p>The questions</p>
+		<ul>
+			{{#each titlesfromdatabase}}
+			<li>{{this.title}}</li>
+			{{/each}}
+			</ul>
 		<p><a href="/register">register</a></p>
 	</body>
 </html>

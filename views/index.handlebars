@@ -19,5 +19,14 @@
 			<p>Optional Image:<br /><input type="file" name="questionimage"></p>
 			<p><input type="submit" value="Create"></p>
 		</form>
+		<header>
+			<h1>{{title}}</h1>
+		</header>
+		<p>The questions</p>
+		<ul>
+			{{#each titlesfromdatabase}}
+			<li>{{this.title}}</li>
+			{{/each}}
+			</ul>
 		<p><a href="/logout">log out</a></p>
 </html>
