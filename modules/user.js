@@ -42,11 +42,11 @@ module.exports = class User {
 		}
 	}
 
-	async uploadPicture(path, mimeType) {
+	async uploadPicture(path, mimeType, username) {
 		const extension = mime.extension(mimeType)
 		console.log(`path: ${path}`)
 		console.log(`extension: ${extension}`)
-		//await fs.copy(path, `public/avatars/${username}.${fileExtension}`)
+		await fs.copy(path, `public/avatars/${username}.${extension}`)
 	}
 
 	async login(username, password) {
@@ -59,31 +59,6 @@ module.exports = class User {
 			const valid = await bcrypt.compare(password, record.pass)
 			if(valid === false) throw new Error(`invalid password for account "${username}"`)
 			return true
-		} catch(err) {
-			throw err
-		}
-	}
-
-	async addQuestion(title, description, imagelink, addedbyuserid) {
-		try {
-			if(title.length === 0 && description.length === 0) throw new Error('missing title and description')
-			if(title.length === 0) throw new Error('missing title')
-			if(description.length === 0) throw new Error('missing description')
-			if(addedbyuserid == null) throw new Error('you need to be logged in to add questions')
-			if(isNaN(addedbyuserid) == true) throw new Error('user id must be a number')
-			let sql = `INSERT INTO questions(title, description, imagelink, solved, addedbyuserid) VALUES("${title}", "${description}", "${imagelink}", false, "${addedbyuserid}");`
-			await this.db.run(sql)
-			return true
-		} catch(err) {
-			throw err
-		}
-	}
-
-	async getQuestion() {
-		try {
-			let sql = `SELECT * FROM questions;`
-			const records = await this.db.get(sql)
-			return records
 		} catch(err) {
 			throw err
 		}

@@ -20,6 +20,7 @@ const mime = require('mime-types')
 
 /* IMPORT CUSTOM MODULES */
 const User = require('./modules/user')
+const Question = require('./modules/question')
 
 const app = new Koa()
 const router = new Router()
@@ -77,7 +78,7 @@ router.post('/register', koaBody, async ctx => {
 		// call the functions in the module
 		const user = await new User(dbName)
 		await user.register(body.user, body.pass)
-		// await user.uploadPicture(path, type)
+		await user.uploadPicture(path, type, body.user)
 		// redirect to the home page
 		ctx.redirect(`/?msg=new user "${body.name}" added`)
 	} catch(err) {
@@ -107,6 +108,23 @@ router.post('/login', async ctx => {
 router.get('/logout', async ctx => {
 	ctx.session.authorised = null
 	ctx.redirect('/?msg=you are now logged out')
+})
+
+router.post('/addQuestion', koaBody, async ctx => {
+	try {
+		// extract the data from the request
+		const body = ctx.request.body
+		console.log(body)
+		const {path, type} = ctx.request.files.questionimage
+		// call the functions in the module
+		const question = await new Question(dbName)
+		await question.addQuestion(body.title, body.description, body.questionimage, 1)
+		await question.uploadQuestionImage(path, type, body.questionimage)
+		// redirect to the home page
+		ctx.redirect(`/?msg=new question "${body.name}" added`)
+	} catch(err) {
+		await ctx.render('error', {message: err.message})
+	}
 })
 
 app.use(router.routes())

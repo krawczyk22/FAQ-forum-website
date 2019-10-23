@@ -12,5 +12,12 @@
 	<body>
 		<h1>Home</h1>
 		<p>This is a secure page. Users need to have a valid account and be logged in to see it.</p>
+		<h1>Create a question</h1>
+		<form action="/addQuestion" enctype="multipart/form-data" method="post">
+			<p>Title:<br /><input type="text" name="title" placeholder="title of the question" value=""></p>
+            <p>Description:<br /><input type="text" name="description" placeholder="description of the problem" value=""></p>
+			<p>Optional Image:<br /><input type="file" name="questionimage"></p>
+			<p><input type="submit" value="Create"></p>
+		</form>
 		<p><a href="/logout">log out</a></p>
 </html>
