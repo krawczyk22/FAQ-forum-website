@@ -17,12 +17,27 @@
             <h3>The description is</h3>
             {{#each title}}
             <h4>{{this.description}}</h4>
-            {{/each}}
+			<a href="http://localhost:8080/questionimages/{{this.imagelink}}"><img src="http://localhost:8080/questionimages/{{this.imagelink}}" height="100" width="100"></a>
+			{{/each}}
 		</header>
 		<p>The answers</p>
 		<ul>
 			{{#each commentsfromdatabase}}
-			<li>{{this.content}}</li>
+				{{#if this.iscorrect}}
+					<li>
+						{{this.content}} -------- correct answer
+						<form action="/updateCommentIsCorrect?comment={{this.id}}&addedbyuser={{this.addedbyuserid}}&questionsid={{this.questionsid}}" method="post">
+						<p><input type="submit" value="Tag as correct"></p>
+						</form>
+					</li>
+					{{else}}
+					<li>
+						{{this.content}}
+						<form action="/updateCommentIsCorrect?comment={{this.id}}&addedbyuser={{this.addedbyuserid}}&questionsid={{this.questionsid}}" method="post">
+						<p><input type="submit" value="Tag as correct"></p>
+						</form>
+					</li>
+				{{/if}}
 			{{/each}}
 		</ul>
         <p>Add comments here</p>

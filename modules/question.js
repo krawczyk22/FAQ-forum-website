@@ -46,6 +46,19 @@ module.exports = class Question {
 		}
 	}
 
+	async updateQuestionIsSolved(questionid) {
+		try {
+			if(questionid.length === 0) throw new Error('missing question')
+			if(isNaN(questionid) == true) throw new Error('question id must be a number')
+			let sql = `UPDATE questions SET solved = true WHERE id = ${questionid};`
+			await this.db.run(sql)
+			console.log("HOLAaAAAAAAA")
+			return true
+		} catch(err) {
+			throw err
+		}
+	}
+
 	async getQuestion() {
 		try {
 			let sql = `SELECT * FROM questions;`

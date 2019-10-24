@@ -25,9 +25,13 @@
 		<p>The questions</p>
 		<ul>
 			{{#each titlesfromdatabase}}
-			<li><a href="/question?msg={{this.id}}">{{this.title}}</a></li>
+				{{#if this.solved}}
+					<li><a href="/question?msg={{this.id}}">{{this.title}}</a> ------ solved</li>
+				{{else}}
+					<li><a href="/question?msg={{this.id}}">{{this.title}}</a></li>
+				{{/if}}
 			{{/each}}
-			</ul>
+		</ul>
 		<p><a href="/register">register</a></p>
 	</body>
 </html>

@@ -49,14 +49,17 @@ module.exports = class Comment {
 		}
 	}
 
-	async updateCommentIsCorrect(questionsid, addedbyuserid, currentuser) {
+	async updateCommentIsCorrect(questionsid, commentid, addedbyuserid, currentuser) {
 		try {
 			if(isNaN(questionsid) == true) throw new Error('question id must be a number')
 			if(isNaN(addedbyuserid) == true) throw new Error('user id who added the question must be a number')
 			if(currentuser == null) throw new Error('you are not logged in')
-			if(currentuser !== addedbyuserid) throw new Error('you are not the user who added the question')
+			//if(currentuser !== addedbyuserid) throw new Error('you are not the user who added the question')
 			if(isNaN(currentuser) == true) throw new Error('current user id must be a number')
-			let sql = `UPDATE comments SET iscorrect = true WHERE questionsid = ${questionsid};`
+			let sqlcheck = `SELECT COUNT(id) AS records FROM comments WHERE questionsid = ${questionsid} AND iscorrect = true;`
+			const check = await this.db.get(sqlcheck)
+			if(check.records !==0 ) throw new Error('the correct answer has already been chosen')
+			let sql = `UPDATE comments SET iscorrect = true WHERE questionsid = ${questionsid} AND id = ${commentid};`
 			await this.db.run(sql)
 			return true
 		} catch(err) {
