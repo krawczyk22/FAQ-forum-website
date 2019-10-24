@@ -22,6 +22,7 @@ const mime = require('mime-types')
 /* IMPORT CUSTOM MODULES */
 const User = require('./modules/user')
 const Question = require('./modules/question')
+const Comment = require('./modules/comment')
 
 const app = new Koa()
 const router = new Router()
@@ -50,7 +51,7 @@ router.get('/', async ctx => {
 		if(ctx.session.authorised !== true) return ctx.redirect('/login?msg=you need to log in')
 		const data = {}
 		if(ctx.query.msg) data.msg = ctx.query.msg
-		const sql = 'SELECT title FROM questions;'
+		const sql = 'SELECT id, title FROM questions;'
 		const db = await Database.open(dbName)
 		const datafromdatabase = await db.all(sql)
 		await db.close()
@@ -93,16 +94,34 @@ router.post('/register', koaBody, async ctx => {
 	}
 })
 
+router.post('/addQuestion', koaBody, async ctx => {
+	try {
+		// extract the data from the request
+		const body = ctx.request.body
+		console.log(body)
+		const {path, type} = ctx.request.files.questionimage
+		// call the functions in the module
+		const question = await new Question(dbName)
+		const extension = mime.extension(type)
+		await question.addQuestion(body.title, body.description, `public/questionimages/${body.title}.${extension}`, 1)
+		await question.uploadQuestionImage(path, type, body.title)
+		// redirect to the home page
+		ctx.redirect(`/?msg=new question "${body.name}" added`)
+	} catch(err) {
+		await ctx.render('error', {message: err.message})
+	}
+})
+
 router.get('/login', async ctx => {
 	const data = {}
 	if(ctx.query.msg) data.msg = ctx.query.msg
 	if(ctx.query.user) data.user = ctx.query.user
-	const sql = 'SELECT title FROM questions;'
+	const sql = 'SELECT id, title FROM questions;'
 	const db = await Database.open(dbName)
 	const datafromdatabase = await db.all(sql)
 	await db.close()
 	console.log(datafromdatabase)
-	await ctx.render('login', {title: 'Questions', titlesfromdatabase: datafromdatabase, data})
+	await ctx.render('login', {title: 'Questions', titlesfromdatabase: datafromdatabase})
 	//await ctx.render('login', data)
 })
 
@@ -123,18 +142,34 @@ router.get('/logout', async ctx => {
 	ctx.redirect('/?msg=you are now logged out')
 })
 
-router.post('/addQuestion', koaBody, async ctx => {
+router.get('/question', async ctx => {
+	const data = {}
+	if(ctx.query.msg) data.msg = ctx.query.msg
+	const sqlquestions = `SELECT id, title, description FROM questions WHERE id = ${data.msg};`
+	const sqlcomments = `SELECT content FROM comments WHERE questionsid = ${data.msg};`
+	const db = await Database.open(dbName)
+	const questionsdatafromdatabase = await db.all(sqlquestions)
+	const commentsdatafromdatabase = await db.all(sqlcomments)
+	await db.close()
+	console.log(questionsdatafromdatabase)
+	console.log(commentsdatafromdatabase)
+	if(ctx.session.authorised !== true)
+		await ctx.render('question', {title: questionsdatafromdatabase, commentsfromdatabase: commentsdatafromdatabase})
+	else
+		await ctx.render('questionwithcomments', {title: questionsdatafromdatabase, commentsfromdatabase: commentsdatafromdatabase})
+})
+
+router.post('/addComment', async ctx => {
 	try {
 		// extract the data from the request
 		const body = ctx.request.body
 		console.log(body)
-		const {path, type} = ctx.request.files.questionimage
-		// call the functions in the module
-		const question = await new Question(dbName)
-		await question.addQuestion(body.title, body.description, body.questionimage, 1)
-		await question.uploadQuestionImage(path, type, body.questionimage)
+		const data = {}
+		if(ctx.query.msg) data.msg = ctx.query.msg
+		const comment = await new Comment(dbName)
+		await comment.addComment(data.msg, body.content, 1)
 		// redirect to the home page
-		ctx.redirect(`/?msg=new question "${body.name}" added`)
+		ctx.redirect(`/?msg=new comment "${body.name}" added`)
 	} catch(err) {
 		await ctx.render('error', {message: err.message})
 	}

@@ -25,8 +25,9 @@
 		<p>The questions</p>
 		<ul>
 			{{#each titlesfromdatabase}}
-			<li>{{this.title}}</li>
+			<li><a href="/question?msg={{this.id}}">{{this.title}}</a></li>
 			{{/each}}
 			</ul>
+		</ul>
 		<p><a href="/logout">log out</a></p>
 </html>

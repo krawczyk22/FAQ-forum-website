@@ -25,7 +25,7 @@
 		<p>The questions</p>
 		<ul>
 			{{#each titlesfromdatabase}}
-			<li>{{this.title}}</li>
+			<li><a href="/question?msg={{this.id}}">{{this.title}}</a></li>
 			{{/each}}
 			</ul>
 		<p><a href="/register">register</a></p>
