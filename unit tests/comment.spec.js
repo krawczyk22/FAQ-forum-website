@@ -4,6 +4,7 @@
 const Comments = require('../modules/comment.js')
 
 describe('getCommentByIdQuestion()', () => {
+
 	test('get comments by id of the question', async done => {
 		expect.assertions(1)
 		const comment = await new Comments()
@@ -26,6 +27,7 @@ describe('getCommentByIdQuestion()', () => {
 })
 
 describe('addComment()', () => {
+
 	test('add a valid comment', async done => {
 		expect.assertions(1)
 		const comment = await new Comments()
@@ -69,6 +71,7 @@ describe('addComment()', () => {
 })
 
 describe('updateCommentIsCorrect()', () => {
+    
 	test('update a valid comment', async done => {
 		expect.assertions(1)
 		const comment = await new Comments()

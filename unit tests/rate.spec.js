@@ -3,6 +3,7 @@
 const Rates = require('../modules/rate.js')
 
 describe('addRate()', () => {
+    
 	test('add a valid rate', async done => {
 		expect.assertions(1)
 		const rate = await new Rates()

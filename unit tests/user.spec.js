@@ -54,6 +54,7 @@ describe('uploadPicture()', () => {
 })
 
 describe('login()', () => {
+	
 	test('log in with valid credentials', async done => {
 		expect.assertions(1)
 		const account = await new Accounts()

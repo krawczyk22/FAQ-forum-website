@@ -54,7 +54,7 @@ module.exports = class Comment {
 			if(isNaN(questionsid) == true) throw new Error('question id must be a number')
 			if(isNaN(addedbyuserid) == true) throw new Error('user id who added the question must be a number')
 			if(currentuser == null) throw new Error('you are not logged in')
-			if(currentuser !== addedbyuserid) throw new Error('you are not the user who added the question')
+			if(currentuser != addedbyuserid) throw new Error('you are not the user who added the question')
 			if(isNaN(currentuser) == true) throw new Error('current user id must be a number')
 			let sqlcheck = `SELECT COUNT(id) AS records FROM comments WHERE questionsid = ${questionsid} AND iscorrect = true;`
 			const check = await this.db.get(sqlcheck)

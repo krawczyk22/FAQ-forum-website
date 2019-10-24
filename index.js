@@ -24,6 +24,7 @@ const User = require('./modules/user')
 const Question = require('./modules/question')
 const Comment = require('./modules/comment')
 const Rate = require('./modules/rate')
+const Contribution = require('./modules/contribution')
 
 const app = new Koa()
 const router = new Router()
