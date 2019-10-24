@@ -23,6 +23,7 @@ const mime = require('mime-types')
 const User = require('./modules/user')
 const Question = require('./modules/question')
 const Comment = require('./modules/comment')
+const Rate = require('./modules/rate')
 
 const app = new Koa()
 const router = new Router()
@@ -51,7 +52,7 @@ router.get('/', async ctx => {
 		if(ctx.session.authorised !== true) return ctx.redirect('/login?msg=you need to log in')
 		const data = {}
 		if(ctx.query.msg) data.msg = ctx.query.msg
-		const sql = 'SELECT id, title, solved FROM questions;'
+		const sql = 'SELECT id, title, solved, imagelink FROM questions;'
 		const db = await Database.open(dbName)
 		const datafromdatabase = await db.all(sql)
 		await db.close()
@@ -98,13 +99,18 @@ router.post('/addQuestion', koaBody, async ctx => {
 	try {
 		// extract the data from the request
 		const body = ctx.request.body
-		console.log(body)
+		console.log(ctx.request.files.questionimage)
 		const {path, type} = ctx.request.files.questionimage
 		// call the functions in the module
 		const question = await new Question(dbName)
 		const extension = mime.extension(type)
-		await question.addQuestion(body.title, body.description, `${body.title}.${extension}`, 1)
-		await question.uploadQuestionImage(path, type, body.title)
+		if(extension !== 'bin')
+		{
+			await question.addQuestion(body.title, body.description, `${body.title}.${extension}`, 1)
+			await question.uploadQuestionImage(path, type, body.title)
+		}
+		else 
+			await question.addQuestion(body.title, body.description, '', 1)
 		// redirect to the home page
 		ctx.redirect(`/?msg=new question "${body.name}" added`)
 	} catch(err) {
@@ -116,7 +122,7 @@ router.get('/login', async ctx => {
 	const data = {}
 	if(ctx.query.msg) data.msg = ctx.query.msg
 	if(ctx.query.user) data.user = ctx.query.user
-	const sql = 'SELECT id, title, solved FROM questions;'
+	const sql = 'SELECT id, title, solved, imagelink FROM questions;'
 	const db = await Database.open(dbName)
 	const datafromdatabase = await db.all(sql)
 	await db.close()
@@ -189,6 +195,25 @@ router.post('/updateCommentIsCorrect', async ctx => {
 		const question = await new Question(dbName)
 		await question.updateQuestionIsSolved(data.questionsid)
 		ctx.redirect(`/?msg=new comment flagged "${body.name}" added`)
+	} catch(err) {
+		await ctx.render('error', {message: err.message})
+	}
+})
+
+router.post('/addRate', async ctx => {
+	try {
+		// extract the data from the request
+		const body = ctx.request.body
+		const data = {}
+		if(ctx.query.questionsid) data.questionsid = ctx.query.questionsid
+		if(ctx.query.commentsid) data.commentsid = ctx.query.commentsid
+		if(ctx.query.addedbyuser) data.addedbyuser = ctx.query.addedbyuser
+		//if(ctx.query.currentuser) data.currentuser = ctx.query.currentuser
+		console.log("hello")
+		const rate = await new Rate(dbName)
+		await rate.addRate(data.questionsid, data.commentsid, body.rate, data.addedbyuser, 1)
+		// redirect to the home page
+		ctx.redirect(`/?msg=new rate "${body.name}" added`)
 	} catch(err) {
 		await ctx.render('error', {message: err.message})
 	}

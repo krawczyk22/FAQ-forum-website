@@ -19,7 +19,7 @@ module.exports = class User {
 			await this.db.run(sql2)
 			const sql3 = 'CREATE TABLE IF NOT EXISTS comments (id INTEGER PRIMARY KEY AUTOINCREMENT, questionsid INT, addedbyuserid INT, content TEXT, iscorrect BOOLEAN);'
 			await this.db.run(sql3)
-			const sql4 = 'CREATE TABLE IF NOT EXISTS rates (id INTEGER PRIMARY KEY AUTOINCREMENT, questionsid INT, commentsid INT, rate INT);'
+			const sql4 = 'CREATE TABLE IF NOT EXISTS rates (id INTEGER PRIMARY KEY AUTOINCREMENT, questionsid INT, commentsid INT, rate INT, addedbyuser INT);'
 			await this.db.run(sql4)
 			return this
 		})()
@@ -44,8 +44,6 @@ module.exports = class User {
 
 	async uploadPicture(path, mimeType, username) {
 		const extension = mime.extension(mimeType)
-		console.log(`path: ${path}`)
-		console.log(`extension: ${extension}`)
 		await fs.copy(path, `public/avatars/${username}.${extension}`)
 	}
 

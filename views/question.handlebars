@@ -14,10 +14,13 @@
             {{#each title}}
 			    <h2>{{this.title}}</h2>
             {{/each}}
-            <h3>The description is</h3>
+            	<h3>The description is</h3>
             {{#each title}}
-            <h4>{{this.description}}</h4>
-			<a href="http://localhost:8080/questionimages/{{this.imagelink}}"><img src="http://localhost:8080/questionimages/{{this.imagelink}}" height="100" width="100"></a>
+            	<h4>{{this.description}}</h4>
+				{{#if this.imagelink}}
+					<a href="http://localhost:8080/questionimages/{{this.imagelink}}"><img src="http://localhost:8080/questionimages/{{this.imagelink}}" height="100" width="100"></a>
+				{{else}}
+				{{/if}}
 			{{/each}}
 		</header>
 		<p>The answers</p>

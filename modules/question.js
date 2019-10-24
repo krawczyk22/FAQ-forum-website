@@ -18,7 +18,7 @@ module.exports = class Question {
 			await this.db.run(sql2)
 			const sql3 = 'CREATE TABLE IF NOT EXISTS comments (id INTEGER PRIMARY KEY AUTOINCREMENT, questionsid INT, addedbyuserid INT, content TEXT, iscorrect BOOLEAN);'
 			await this.db.run(sql3)
-			const sql4 = 'CREATE TABLE IF NOT EXISTS rates (id INTEGER PRIMARY KEY AUTOINCREMENT, questionsid INT, commentsid INT, rate INT);'
+			const sql4 = 'CREATE TABLE IF NOT EXISTS rates (id INTEGER PRIMARY KEY AUTOINCREMENT, questionsid INT, commentsid INT, rate INT, addedbyuser INT);'
 			await this.db.run(sql4)
 			return this
 		})()
@@ -26,8 +26,6 @@ module.exports = class Question {
 
     async uploadQuestionImage(path, mimeType, question) {
 		const extension = mime.extension(mimeType)
-		console.log(`path: ${path}`)
-		console.log(`extension: ${extension}`)
 		await fs.copy(path, `public/questionimages/${question}.${extension}`)
     }
     
@@ -52,7 +50,6 @@ module.exports = class Question {
 			if(isNaN(questionid) == true) throw new Error('question id must be a number')
 			let sql = `UPDATE questions SET solved = true WHERE id = ${questionid};`
 			await this.db.run(sql)
-			console.log("HOLAaAAAAAAA")
 			return true
 		} catch(err) {
 			throw err
