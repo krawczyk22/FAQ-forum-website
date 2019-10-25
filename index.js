@@ -191,10 +191,12 @@ router.post('/updateCommentIsCorrect', async ctx => {
 		if(ctx.query.addedbyuser) data.addedbyuser = ctx.query.addedbyuser
 		if(ctx.query.questionsid) data.questionsid = ctx.query.questionsid
 		const comment = await new Comment(dbName)
-		await comment.updateCommentIsCorrect(data.questionsid, data.comment, data.addedbyuser, 1)
-		// redirect to the home page
 		const question = await new Question(dbName)
+		const contribution = await new Contribution(dbName)
+		await comment.updateCommentIsCorrect(data.questionsid, data.comment, data.addedbyuser, 1)
 		await question.updateQuestionIsSolved(data.questionsid)
+		await contribution.addFiftyPoints(data.addedbyuser)
+		await contribution.updateStars()
 		ctx.redirect(`/?msg=new comment flagged "${body.name}" added`)
 	} catch(err) {
 		await ctx.render('error', {message: err.message})
@@ -210,9 +212,24 @@ router.post('/addRate', async ctx => {
 		if(ctx.query.commentsid) data.commentsid = ctx.query.commentsid
 		if(ctx.query.addedbyuser) data.addedbyuser = ctx.query.addedbyuser
 		//if(ctx.query.currentuser) data.currentuser = ctx.query.currentuser
-		console.log("hello")
 		const rate = await new Rate(dbName)
 		await rate.addRate(data.questionsid, data.commentsid, body.rate, data.addedbyuser, 1)
+		// redirect to the home page
+		ctx.redirect(`/?msg=new rate "${body.name}" added`)
+	} catch(err) {
+		await ctx.render('error', {message: err.message})
+	}
+})
+
+router.post('/takeFivePointsOff', async ctx => {
+	try {
+		// extract the data from the request
+		const body = ctx.request.body
+		const data = {}
+		if(ctx.query.userid) data.userid = ctx.query.userid
+		const contribution = await new Contribution(dbName)
+		await contribution.takeFivePointsOff(data.userid)
+		await contribution.updateStars()
 		// redirect to the home page
 		ctx.redirect(`/?msg=new rate "${body.name}" added`)
 	} catch(err) {

@@ -94,7 +94,7 @@ describe('updateCommentIsCorrect()', () => {
 		expect.assertions(1)
 		const comment = await new Comments()
 		await comment.addComment(2, 3, 1)
-		await expect( comment.updateCommentIsCorrect(1, 1, 1) )
+		await expect( comment.updateCommentIsCorrect(1, 1, 1, null) )
 			.rejects.toEqual( Error('you are not logged in') )
 		done()
 	})
@@ -112,6 +112,14 @@ describe('updateCommentIsCorrect()', () => {
 		const comment = await new Comments()
 		await expect( comment.updateCommentIsCorrect(1, 1, 'addedbyuser', 1) )
 			.rejects.toEqual( Error('user id who added the question must be a number') )
+		done()
+	})
+
+	test('update a comment where user who tries to update the question is not a number', async done => {
+		expect.assertions(1)
+		const comment = await new Comments()
+		await expect( comment.updateCommentIsCorrect(1, 1, 1, 'currentuser') )
+			.rejects.toEqual( Error('current user id must be a number') )
 		done()
 	})
 

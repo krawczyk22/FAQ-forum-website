@@ -29,18 +29,18 @@
 				{{#if this.iscorrect}}
 					<li>
 						{{this.content}} -------- correct answer
-						<form action="/updateCommentIsCorrect?comment={{this.id}}&addedbyuser={{this.addedbyuserid}}&questionsid={{this.questionsid}}" method="post">
-						<p><input type="submit" value="Tag as correct"></p>
-						</form>
 					</li>
 				{{else}}
 					<li>
 						{{this.content}}
-						<form action="/updateCommentIsCorrect?comment={{this.id}}&addedbyuser={{this.addedbyuserid}}&questionsid={{this.questionsid}}" method="post">
-						<p><input type="submit" value="Tag as correct"></p>
-						</form>
 					</li>
 				{{/if}}
+				<form action="/updateCommentIsCorrect?comment={{this.id}}&addedbyuser={{this.addedbyuserid}}&questionsid={{this.questionsid}}" method="post">
+						<p><input type="submit" value="Tag as correct"></p>
+				</form>
+				<form action="/takeFivePointsOff?userid={{this.addedbyuserid}}" method="post">
+						<p><input type="submit" value="Tag as inappropriate / off topic"></p>
+				</form>
 				<form action="/addRate?questionsid={{this.questionsid}}&commentsid={{this.id}}&addedbyuser={{this.addedbyuserid}}" method="post">
 					<p>Rate:<br /><input type="text" name="rate" placeholder="your rate" value="" autofocus></p>
 					<p><input type="submit" value="Add rate"></p>
