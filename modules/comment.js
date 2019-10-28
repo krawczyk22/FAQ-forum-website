@@ -30,6 +30,8 @@ module.exports = class Comment {
 			if(addedbyuserid == null) throw new Error('you need to be logged in to add comments')
 			if(isNaN(questionsid) == true) throw new Error('question id must be a number')
 			if(isNaN(addedbyuserid) == true) throw new Error('user id must be a number')
+			if(questionsid % 1 != 0) throw new Error('question id must be an integer')
+			if(addedbyuserid % 1 != 0) throw new Error('user id must be an integer')
 			let sql = `INSERT INTO comments(questionsid, addedbyuserid, iscorrect, content) VALUES(${questionsid}, ${addedbyuserid}, false, "${content}");`
 			await this.db.run(sql)
 			return true

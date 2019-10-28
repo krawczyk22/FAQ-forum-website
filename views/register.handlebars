@@ -7,15 +7,37 @@
 		<title>Create an Account</title>
 		<meta name="description" content="form to add new books">
 		<meta name="author" content="Mark Tyers">
-		<link href="style.css" type="text/css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="style.css">
 	</head>
 	<body>
 		<h1>Create an Account</h1>
-		<form action="/register" enctype="multipart/form-data" method="post">
-			<p>Username:<br /><input type="text" name="user" placeholder="your preferred username (no spaces)" value=""></p>
-            <p>Password:<br /><input type="password" name="pass" placeholder="your chosen password" value=""></p>
-			<p>Profile Picture:<br /><input type="file" name="avatar"></p>
-			<p><input type="submit" value="Create"></p>
-		</form>
+		<table>
+			<form action="/register" enctype="multipart/form-data" method="post">
+				<tr>
+					<th colspan="2">Register</th>
+				</tr>
+				<tr>
+					<th class="description">Username</th>
+					<td>
+						<input type="text" name="user" placeholder="your preferred username (no spaces)" value="">
+					</td>
+				</tr>
+				<tr>
+					<th class="description">Password</th>
+					<td>
+						<input type="password" name="pass" placeholder="your chosen password" value="">
+					</td>
+				</tr>
+				<tr>
+					<th class="description">Profile Picture</th>
+					<td>
+						<input type="file" name="avatar">
+					</td>
+				</tr>
+				<tr>
+					<th colspan="2"><input type="submit" value="Create"></th>
+				</tr>
+			</form>
+		</table>
 	</body>
 </html>

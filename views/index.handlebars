@@ -7,30 +7,54 @@
 		<title>Home Page</title>
 		<meta name="description" content="form to add new books">
 		<meta name="author" content="Mark Tyers">
-		<link href="style.css" type="text/css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="style.css">
 	</head>
 	<body>
-		<h1>Home</h1>
-		<p>This is a secure page. Users need to have a valid account and be logged in to see it.</p>
-		<h1>Create a question</h1>
-		<form action="/addQuestion" enctype="multipart/form-data" method="post">
-			<p>Title:<br /><input type="text" name="title" placeholder="title of the question" value=""></p>
-            <p>Description:<br /><input type="text" name="description" placeholder="description of the problem" value=""></p>
-			<p>Optional Image:<br /><input type="file" name="questionimage"></p>
-			<p><input type="submit" value="Create"></p>
-		</form>
-		<header>
-			<h1>{{title}}</h1>
-		</header>
-		<p>The questions</p>
-		<ul>
+		<h1>You are logged in. Click <a href="/logout">this</a> to log out</h1>
+		<table>
+			<form action="/addQuestion" enctype="multipart/form-data" method="post">
+				<tr>
+					<th colspan="2">Add question</th>
+				</tr>
+				<tr>
+					<th class="description">Title</th>
+					<td><textarea name="title" placeholder="title of the question" value="" cols="168" rows="5"></textarea></td>
+				</tr>
+				<tr>
+					<th class="description">Description:</th>
+					<td><textarea name="description" placeholder="description of the problem" cols="168" rows="5" value=""></textarea></td>
+				</tr>
+				<tr>
+					<th class="description">Optional Image:</th>
+					<td><input type="file" name="questionimage"></td>
+				</tr>
+				<tr>
+					<th colspan="2"><input type="submit" value="Create"></th>
+				</tr>
+			</form>
+		</table><br>
+		<table>
+			<tr>
+				<th colspan="4">{{title}}</th>
+			</tr>
+			<tr>
+				<th>ID</th>
+				<th>Question</th>
+				<th>Posting user</th>
+				<th>Is solved</th>
+			</tr>
 			{{#each titlesfromdatabase}}
-				{{#if this.solved}}
-					<li><a href="/question?msg={{this.id}}">{{this.title}}</a> ------ solved</li>
-				{{else}}
-					<li><a href="/question?msg={{this.id}}">{{this.title}}</a></li>
-				{{/if}}
+				<tr>
+					<td>{{this.id}}</td>
+					<td><a href="/question?msg={{this.id}}">{{this.title}}</a></td>
+					<td>{{this.addedbyuserid}}</td>
+					{{#if this.solved}}
+						<td>Solved</td>
+						{{else}}
+						<td>Not solved</td>
+					{{/if}}
+				</tr>
 			{{/each}}
-		</ul>
-		<p><a href="/logout">log out</a></p>
+		</table>
+	</body>
 </html>

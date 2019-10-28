@@ -68,6 +68,22 @@ describe('addComment()', () => {
 		done()
 	})
 
+	test('add a comment to question where question id is not an integer', async done => {
+		expect.assertions(1)
+		const comment = await new Comments()
+		await expect( comment.addComment(1.5, 'content', 1) )
+			.rejects.toEqual( Error('question id must be an integer') )
+		done()
+	})
+
+	test('aadd a comment to question where question id is not an integer', async done => {
+		expect.assertions(1)
+		const comment = await new Comments()
+		await expect( comment.addComment(1, 'content', 1.5) )
+			.rejects.toEqual( Error('user id must be an integer') )
+		done()
+	})
+
 })
 
 describe('updateCommentIsCorrect()', () => {
@@ -132,5 +148,5 @@ describe('updateCommentIsCorrect()', () => {
 			.rejects.toEqual( Error('the correct answer has already been chosen') )
 		done()
     })
-    
+	
 })

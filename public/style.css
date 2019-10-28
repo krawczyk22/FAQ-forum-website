@@ -9,4 +9,21 @@ body {
     color: red;
     padding: 1em;
   }
-  
+
+table {
+    width: 100%;
+}
+
+th {
+  background-color: grey;
+  color: white;
+}
+
+th.description {
+  background-color: grey;
+  color: white;
+  width: 15%;
+  height: 80px;
+}
+
+tr:nth-child(even) {background-color: #f2f2f2;}

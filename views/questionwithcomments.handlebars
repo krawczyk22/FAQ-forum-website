@@ -6,51 +6,82 @@
 		<title>Log In</title>
 		<meta name="description" content="form to add new books">
 		<meta name="author" content="Mark Tyers">
-		<link href="style.css" type="text/css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="style.css">
 	</head>
 	<body>
-		<header>
-            <h1>The question is</h1>
-            {{#each title}}
-			    <h2>{{this.title}}</h2>
-            {{/each}}
-            	<h3>The description is</h3>
-            {{#each title}}
-            	<h4>{{this.description}}</h4>
+		<h1>You are viewing a question. Click <a href="/">this</a> to come back to the homepage</h1>
+		<table>
+			<tr>
+				<th class="description">Question</th>
+				{{#each title}}
+					<td><h2>{{this.title}}</h2></td>
+				{{/each}}
+			</tr>
+			<tr>
+            	<th class="description">Description</th>
+            	{{#each title}}
+            		<td><h3>{{this.description}}</h3></td>
+				{{/each}}
+			</tr>
+			{{#each title}}
 				{{#if this.imagelink}}
-					<a href="http://localhost:8080/questionimages/{{this.imagelink}}"><img src="http://localhost:8080/questionimages/{{this.imagelink}}" height="100" width="100"></a>
+				<tr>
+					<th class="description">Image</th>
+					<td>
+						<a href="http://localhost:8080/questionimages/{{this.imagelink}}"><img src="http://localhost:8080/questionimages/{{this.imagelink}}" height="100" width="100"></a>
+					</td>
+				</tr>
 				{{else}}
 				{{/if}}
 			{{/each}}
-		</header>
-		<p>The answers</p>
-		<ul>
+		</table><br>
+		<table>
+			<tr>
+				<th colspan="5">Answers</th>
+			</tr>
+			<tr>
+				<th>User</th>
+				<th>Comment</th>
+				<th>Is correct</th>
+				<th>Rate</th>
+				<th>Report / Mark as correct</th>
+			</tr>
 			{{#each commentsfromdatabase}}
-				{{#if this.iscorrect}}
-					<li>
-						{{this.content}} -------- correct answer
-					</li>
-				{{else}}
-					<li>
-						{{this.content}}
-					</li>
-				{{/if}}
-				<form action="/updateCommentIsCorrect?comment={{this.id}}&addedbyuser={{this.addedbyuserid}}&questionsid={{this.questionsid}}" method="post">
+				<tr>
+					<td>{{this.addedbyuserid}}</td>
+					<td>{{this.content}}</td>
+					{{#if this.iscorrect}}
+						<td>Correct</td>
+					{{else}}
+						<td>Not correct</td>
+					{{/if}}
+					<td>
+						<form action="/addRate?questionsid={{this.questionsid}}&commentsid={{this.id}}&addedbyuser={{this.addedbyuserid}}" method="post">
+						<p>Rate:<br /><input type="text" name="rate" placeholder="your rate" value="" autofocus></p>
+						<p><input type="submit" value="Add rate"></p>
+						</form>
+					</td>
+					<td>
+						<form action="/updateCommentIsCorrect?comment={{this.id}}&addedbyuser={{this.addedbyuserid}}&questionsid={{this.questionsid}}" method="post">
 						<p><input type="submit" value="Tag as correct"></p>
-				</form>
-				<form action="/takeFivePointsOff?userid={{this.addedbyuserid}}" method="post">
+						</form>
+						<form action="/takeFivePointsOff?userid={{this.addedbyuserid}}&questionsid={{this.questionsid}}" method="post">
 						<p><input type="submit" value="Tag as inappropriate / off topic"></p>
-				</form>
-				<form action="/addRate?questionsid={{this.questionsid}}&commentsid={{this.id}}&addedbyuser={{this.addedbyuserid}}" method="post">
-					<p>Rate:<br /><input type="text" name="rate" placeholder="your rate" value="" autofocus></p>
-					<p><input type="submit" value="Add rate"></p>
-				</form>
+						</form>
+					</td>
+				</tr>
 			{{/each}}
-		</ul>
-        <p>Add comments here</p>
-        <form action="/addComment?msg={{#each title}}{{this.id}}{{/each}}" method="post">
-			<p>Content<br /><input type="text" name="content" placeholder="Your comment goes here" value=""></p>
-			<p><input type="submit" value="Add comment"></p>
-		</form>
+		</table>
+		<table>
+			<tr>
+				<th class="description">Add comments here</th>
+				<td>
+					<form action="/addComment?msg={{#each title}}{{this.id}}{{/each}}" method="post">
+						<textarea name="content" cols="168" rows="7"></textarea>
+						</p><input type="submit" value="Add comment"></p>
+					</form>
+				</td>
+			</tr>
+		</table>
 	</body>
 </html>

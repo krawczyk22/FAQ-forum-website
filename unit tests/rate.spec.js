@@ -3,7 +3,7 @@
 const Rates = require('../modules/rate.js')
 
 describe('addRate()', () => {
-    
+
 	test('add a valid rate', async done => {
 		expect.assertions(1)
 		const rate = await new Rates()
@@ -33,6 +33,14 @@ describe('addRate()', () => {
 		const rate = await new Rates()
 		await expect( rate.addRate(1, 1, null, 1, 2) )
 			.rejects.toEqual( Error('missing rate value') )
+		done()
+    })
+    
+    test('add a rate which is not an integer number', async done => {
+		expect.assertions(1)
+		const rate = await new Rates()
+		await expect( rate.addRate(1, 1, 1.4, 1, 2) )
+			.rejects.toEqual( Error('the rate must be an integer') )
 		done()
 	})
 	

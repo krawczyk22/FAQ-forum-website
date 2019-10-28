@@ -53,7 +53,7 @@ router.get('/', async ctx => {
 		if(ctx.session.authorised !== true) return ctx.redirect('/login?msg=you need to log in')
 		const data = {}
 		if(ctx.query.msg) data.msg = ctx.query.msg
-		const sql = 'SELECT id, title, solved, imagelink FROM questions;'
+		const sql = 'SELECT id, title, solved, imagelink, addedbyuserid FROM questions;'
 		const db = await Database.open(dbName)
 		const datafromdatabase = await db.all(sql)
 		await db.close()
@@ -113,7 +113,7 @@ router.post('/addQuestion', koaBody, async ctx => {
 		else 
 			await question.addQuestion(body.title, body.description, '', 1)
 		// redirect to the home page
-		ctx.redirect(`/?msg=new question "${body.name}" added`)
+		ctx.redirect(`/`)
 	} catch(err) {
 		await ctx.render('error', {message: err.message})
 	}
@@ -123,7 +123,7 @@ router.get('/login', async ctx => {
 	const data = {}
 	if(ctx.query.msg) data.msg = ctx.query.msg
 	if(ctx.query.user) data.user = ctx.query.user
-	const sql = 'SELECT id, title, solved, imagelink FROM questions;'
+	const sql = 'SELECT id, title, solved, imagelink, addedbyuserid FROM questions;'
 	const db = await Database.open(dbName)
 	const datafromdatabase = await db.all(sql)
 	await db.close()
@@ -170,13 +170,14 @@ router.post('/addComment', async ctx => {
 	try {
 		// extract the data from the request
 		const body = ctx.request.body
-		console.log(body)
+		//console.log(body)
 		const data = {}
 		if(ctx.query.msg) data.msg = ctx.query.msg
+		console.log(data.msg)
 		const comment = await new Comment(dbName)
 		await comment.addComment(data.msg, body.content, 1)
 		// redirect to the home page
-		ctx.redirect(`/?msg=new comment "${body.name}" added`)
+		ctx.redirect(`/question?msg=${data.msg}`)
 	} catch(err) {
 		await ctx.render('error', {message: err.message})
 	}
@@ -197,7 +198,7 @@ router.post('/updateCommentIsCorrect', async ctx => {
 		await question.updateQuestionIsSolved(data.questionsid)
 		await contribution.addFiftyPoints(data.addedbyuser)
 		await contribution.updateStars()
-		ctx.redirect(`/?msg=new comment flagged "${body.name}" added`)
+		ctx.redirect(`/question?msg=${data.questionsid}`)
 	} catch(err) {
 		await ctx.render('error', {message: err.message})
 	}
@@ -215,7 +216,7 @@ router.post('/addRate', async ctx => {
 		const rate = await new Rate(dbName)
 		await rate.addRate(data.questionsid, data.commentsid, body.rate, data.addedbyuser, 1)
 		// redirect to the home page
-		ctx.redirect(`/?msg=new rate "${body.name}" added`)
+		ctx.redirect(`/question?msg=${data.questionsid}`)
 	} catch(err) {
 		await ctx.render('error', {message: err.message})
 	}
@@ -227,11 +228,12 @@ router.post('/takeFivePointsOff', async ctx => {
 		const body = ctx.request.body
 		const data = {}
 		if(ctx.query.userid) data.userid = ctx.query.userid
+		if(ctx.query.questionsid) data.questionsid = ctx.query.questionsid
 		const contribution = await new Contribution(dbName)
 		await contribution.takeFivePointsOff(data.userid)
 		await contribution.updateStars()
 		// redirect to the home page
-		ctx.redirect(`/?msg=new rate "${body.name}" added`)
+		ctx.redirect(`/question?msg=${data.questionsid}`)
 	} catch(err) {
 		await ctx.render('error', {message: err.message})
 	}

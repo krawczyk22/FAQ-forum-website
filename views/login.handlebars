@@ -7,31 +7,63 @@
 		<title>Log In</title>
 		<meta name="description" content="form to add new books">
 		<meta name="author" content="Mark Tyers">
-		<link href="style.css" type="text/css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="style.css">
 	</head>
 	<body>
 		<h1>Log In</h1>
 		{{#if msg}}
  			<p class="msg">{{msg}}</p>
 		{{/if}}
-		<form action="/login" method="post">
-			<p>Username:<br /><input type="text" name="user" placeholder="your username" value="{{user}}" autofocus></p>
-			<p>Password:<br /><input type="password" name="pass" placeholder="your password" value=""></p>
-			<p><input type="submit" value="Log in"></p>
-		</form>
-		<header>
-			<h1>{{title}}</h1>
-		</header>
-		<p>The questions</p>
-		<ul>
+		<table>
+			<form action="/login" method="post">
+				<tr>
+					<th colspan="2">Log in</th>
+				</tr>
+				<tr>
+					<th class="description">Username</th>
+					<td>
+						<input type="text" name="user" placeholder="your username" value="{{user}}" autofocus>
+					</td>
+				</tr>
+				<tr>
+					<th class="description">Password</th>
+					<td>
+						<input type="password" name="pass" placeholder="your password" value="">
+					</td>
+				</tr>
+				<tr>
+					<th colspan="2"><input type="submit" value="Log in"></th>
+				</tr>
+			</form>
+		</table>
+		<table>
+			<tr>
+				<th>You don't have an account? <a href="/register">Register</a> here</th>
+			</tr>
+		</table>
+		<h1>Questions</h1>
+		<table>
+			<tr>
+				<th colspan="4">{{title}}</th>
+			</tr>
+			<tr>
+				<th>ID</th>
+				<th>Question</th>
+				<th>Posting user</th>
+				<th>Is solved</th>
+			</tr>
 			{{#each titlesfromdatabase}}
-				{{#if this.solved}}
-					<li><a href="/question?msg={{this.id}}">{{this.title}}</a> ------ solved</li>
-				{{else}}
-					<li><a href="/question?msg={{this.id}}">{{this.title}}</a></li>
-				{{/if}}
+				<tr>
+					<td>{{this.id}}</td>
+					<td><a href="/question?msg={{this.id}}">{{this.title}}</a></td>
+					<td>{{this.addedbyuserid}}</td>
+					{{#if this.solved}}
+						<td>Solved</td>
+						{{else}}
+						<td>Not solved</td>
+					{{/if}}
+				</tr>
 			{{/each}}
-		</ul>
-		<p><a href="/register">register</a></p>
+		</table>
 	</body>
 </html>
