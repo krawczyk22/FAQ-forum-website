@@ -19,12 +19,12 @@ const fs = require('fs-extra')
 const mime = require('mime-types')
 //const jimp = require('jimp')
 
-/* IMPORT CUSTOM MODULES */
-const User = require('./modules/user')
-const Question = require('./modules/question')
-const Comment = require('./modules/comment')
-const Rate = require('./modules/rate')
-const Contribution = require('./modules/contribution')
+/* IMPORT CUSTOM ROUTES */
+var comments = require('./routes/comments.js');
+var contributions = require('./routes/contributions.js');
+var rates = require('./routes/rates.js');
+var questions = require('./routes/questions.js');
+var users = require('./routes/users.js');
 
 const app = new Koa()
 const router = new Router()
@@ -36,208 +36,17 @@ app.use(bodyParser())
 app.use(session(app))
 app.use(views(`${__dirname}/views`, { extension: 'handlebars' }, {map: { handlebars: 'handlebars' }}))
 
+/* DEFINE THE ROUTES ROUTES */
+app.use(users.routes());
+app.use(comments.routes());
+app.use(contributions.routes());
+app.use(rates.routes());
+app.use(questions.routes());
+
 const defaultPort = 8080
 const port = process.env.PORT || defaultPort
 const dbName = 'website.db'
 const saltRounds = 10
-
-/**
- * The secure home page.
- *
- * @name Home Page
- * @route {GET} /
- * @authentication This route requires cookie-based authentication.
- */
-router.get('/', async ctx => {
-	try {
-		if(ctx.session.authorised !== true) return ctx.redirect('/login?msg=you need to log in')
-		const data = {}
-		if(ctx.query.msg) data.msg = ctx.query.msg
-		const sql = 'SELECT id, title, solved, imagelink, addedbyuserid FROM questions;'
-		const db = await Database.open(dbName)
-		const datafromdatabase = await db.all(sql)
-		await db.close()
-		console.log(datafromdatabase)
-		await ctx.render('index', {title: 'Questions', titlesfromdatabase: datafromdatabase})
-		//await ctx.render('index')
-	} catch(err) {
-		await ctx.render('error', {message: err.message})
-	}
-})
-
-/**
- * The user registration page.
- *
- * @name Register Page
- * @route {GET} /register
- */
-router.get('/register', async ctx => await ctx.render('register'))
-
-/**
- * The script to process new user registrations.
- *
- * @name Register Script
- * @route {POST} /register
- */
-router.post('/register', koaBody, async ctx => {
-	try {
-		// extract the data from the request
-		const body = ctx.request.body
-		console.log(body)
-		const {path, type} = ctx.request.files.avatar
-		// call the functions in the module
-		const user = await new User(dbName)
-		await user.register(body.user, body.pass)
-		await user.uploadPicture(path, type, body.user)
-		// redirect to the home page
-		ctx.redirect(`/?msg=new user "${body.name}" added`)
-	} catch(err) {
-		await ctx.render('error', {message: err.message})
-	}
-})
-
-router.post('/addQuestion', koaBody, async ctx => {
-	try {
-		// extract the data from the request
-		const body = ctx.request.body
-		console.log(ctx.request.files.questionimage)
-		const {path, type} = ctx.request.files.questionimage
-		// call the functions in the module
-		const question = await new Question(dbName)
-		const extension = mime.extension(type)
-		if(extension !== 'bin')
-		{
-			await question.addQuestion(body.title, body.description, `${body.title}.${extension}`, 1)
-			await question.uploadQuestionImage(path, type, body.title)
-		}
-		else 
-			await question.addQuestion(body.title, body.description, '', 1)
-		// redirect to the home page
-		ctx.redirect(`/`)
-	} catch(err) {
-		await ctx.render('error', {message: err.message})
-	}
-})
-
-router.get('/login', async ctx => {
-	const data = {}
-	if(ctx.query.msg) data.msg = ctx.query.msg
-	if(ctx.query.user) data.user = ctx.query.user
-	const sql = 'SELECT id, title, solved, imagelink, addedbyuserid FROM questions;'
-	const db = await Database.open(dbName)
-	const datafromdatabase = await db.all(sql)
-	await db.close()
-	console.log(datafromdatabase)
-	await ctx.render('login', {title: 'Questions', titlesfromdatabase: datafromdatabase})
-	//await ctx.render('login', data)
-})
-
-router.post('/login', async ctx => {
-	try {
-		const body = ctx.request.body
-		const user = await new User(dbName)
-		await user.login(body.user, body.pass)
-		ctx.session.authorised = true
-		return ctx.redirect('/?msg=you are now logged in...')
-	} catch(err) {
-		await ctx.render('error', {message: err.message})
-	}
-})
-
-router.get('/logout', async ctx => {
-	ctx.session.authorised = null
-	ctx.redirect('/?msg=you are now logged out')
-})
-
-router.get('/question', async ctx => {
-	const data = {}
-	if(ctx.query.msg) data.msg = ctx.query.msg
-	const sqlquestions = `SELECT id, title, description, imagelink FROM questions WHERE id = ${data.msg};`
-	const sqlcomments = `SELECT id, content, addedbyuserid, questionsid, iscorrect FROM comments WHERE questionsid = ${data.msg};`
-	const db = await Database.open(dbName)
-	const questionsdatafromdatabase = await db.all(sqlquestions)
-	const commentsdatafromdatabase = await db.all(sqlcomments)
-	await db.close()
-	console.log(questionsdatafromdatabase)
-	console.log(commentsdatafromdatabase)
-	if(ctx.session.authorised !== true)
-		await ctx.render('question', {title: questionsdatafromdatabase, commentsfromdatabase: commentsdatafromdatabase})
-	else
-		await ctx.render('questionwithcomments', {title: questionsdatafromdatabase, commentsfromdatabase: commentsdatafromdatabase})
-})
-
-router.post('/addComment', async ctx => {
-	try {
-		// extract the data from the request
-		const body = ctx.request.body
-		//console.log(body)
-		const data = {}
-		if(ctx.query.msg) data.msg = ctx.query.msg
-		console.log(data.msg)
-		const comment = await new Comment(dbName)
-		await comment.addComment(data.msg, body.content, 1)
-		// redirect to the home page
-		ctx.redirect(`/question?msg=${data.msg}`)
-	} catch(err) {
-		await ctx.render('error', {message: err.message})
-	}
-})
-
-router.post('/updateCommentIsCorrect', async ctx => {
-	try {
-		const body = ctx.request.body
-		// extract the data from the request
-		const data = {}
-		if(ctx.query.comment) data.comment = ctx.query.comment
-		if(ctx.query.addedbyuser) data.addedbyuser = ctx.query.addedbyuser
-		if(ctx.query.questionsid) data.questionsid = ctx.query.questionsid
-		const comment = await new Comment(dbName)
-		const question = await new Question(dbName)
-		const contribution = await new Contribution(dbName)
-		await comment.updateCommentIsCorrect(data.questionsid, data.comment, data.addedbyuser, 1)
-		await question.updateQuestionIsSolved(data.questionsid)
-		await contribution.addFiftyPoints(data.addedbyuser)
-		await contribution.updateStars()
-		ctx.redirect(`/question?msg=${data.questionsid}`)
-	} catch(err) {
-		await ctx.render('error', {message: err.message})
-	}
-})
-
-router.post('/addRate', async ctx => {
-	try {
-		// extract the data from the request
-		const body = ctx.request.body
-		const data = {}
-		if(ctx.query.questionsid) data.questionsid = ctx.query.questionsid
-		if(ctx.query.commentsid) data.commentsid = ctx.query.commentsid
-		if(ctx.query.addedbyuser) data.addedbyuser = ctx.query.addedbyuser
-		//if(ctx.query.currentuser) data.currentuser = ctx.query.currentuser
-		const rate = await new Rate(dbName)
-		await rate.addRate(data.questionsid, data.commentsid, body.rate, data.addedbyuser, 1)
-		// redirect to the home page
-		ctx.redirect(`/question?msg=${data.questionsid}`)
-	} catch(err) {
-		await ctx.render('error', {message: err.message})
-	}
-})
-
-router.post('/takeFivePointsOff', async ctx => {
-	try {
-		// extract the data from the request
-		const body = ctx.request.body
-		const data = {}
-		if(ctx.query.userid) data.userid = ctx.query.userid
-		if(ctx.query.questionsid) data.questionsid = ctx.query.questionsid
-		const contribution = await new Contribution(dbName)
-		await contribution.takeFivePointsOff(data.userid)
-		await contribution.updateStars()
-		// redirect to the home page
-		ctx.redirect(`/question?msg=${data.questionsid}`)
-	} catch(err) {
-		await ctx.render('error', {message: err.message})
-	}
-})
 
 app.use(router.routes())
 module.exports = app.listen(port, async() => console.log(`listening on port ${port}`))
