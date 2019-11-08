@@ -51,7 +51,7 @@ module.exports = class Rate {
 			if(rate > 5) throw new Error('the maximum rate value is 5')
 			if(rate < 1) throw new Error('the minimum rate value is 1')
 
-			if(addedbyuser === currentuser ) throw new Error('you cannot rate your own answer')
+			if(addedbyuser == currentuser ) throw new Error('you cannot rate your own answer')
 			
 			let sql = `INSERT INTO rates(questionsid, commentsid, rate, addedbyuser) VALUES(${questionsid}, ${commentsid}, ${rate}, ${addedbyuser});`
 			await this.db.run(sql)

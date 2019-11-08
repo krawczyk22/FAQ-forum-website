@@ -60,7 +60,9 @@ module.exports = class User {
 			const record = await this.db.get(sql)
 			const valid = await bcrypt.compare(password, record.pass)
 			if(valid === false) throw new Error(`invalid password for account "${username}"`)
-			return true
+			sql = `SELECT id FROM users WHERE user = "${username}";`
+			const iduser = await this.db.get(sql)
+			return iduser.id
 		} catch(err) {
 			throw err
 		}

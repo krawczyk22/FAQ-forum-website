@@ -69,7 +69,6 @@ router.get('/login', async ctx => {
 	const db = await Database.open(dbName)
 	const datafromdatabase = await db.all(sql)
 	await db.close()
-	console.log(datafromdatabase)
 	await ctx.render('login', {title: 'Questions', titlesfromdatabase: datafromdatabase})
 	//await ctx.render('login', data)
 })
@@ -78,8 +77,10 @@ router.post('/login', async ctx => {
 	try {
 		const body = ctx.request.body
 		const user = await new User(dbName)
-		await user.login(body.user, body.pass)
+		const idusername = await user.login(body.user, body.pass)
+		console.log(idusername)
 		ctx.session.authorised = true
+		ctx.session.username = idusername
 		return ctx.redirect('/?msg=you are now logged in...')
 	} catch(err) {
 		await ctx.render('error', {message: err.message})
@@ -88,6 +89,7 @@ router.post('/login', async ctx => {
 
 router.get('/logout', async ctx => {
 	ctx.session.authorised = null
+	ctx.session.username = null
 	ctx.redirect('/?msg=you are now logged out')
 })
 

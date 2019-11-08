@@ -76,7 +76,7 @@ describe('login()', () => {
 		const account = await new Accounts()
 		await account.register('doej', 'password')
 		const valid = await account.login('doej', 'password')
-		expect(valid).toBe(true)
+		expect(valid).toEqual(1)
 		done()
 	})
 
@@ -85,7 +85,7 @@ describe('login()', () => {
 		const account = await new Accounts()
 		await account.register('doej', 'pa$$w£#.?')
 		const valid = await account.login('doej', 'pa$$w£#.?')
-		expect(valid).toBe(true)
+		expect(valid).toEqual(1)
 		done()
 	})
 

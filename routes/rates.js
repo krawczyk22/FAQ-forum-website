@@ -12,9 +12,8 @@ router.post('/addRate', async ctx => {
 		if(ctx.query.questionsid) data.questionsid = ctx.query.questionsid
 		if(ctx.query.commentsid) data.commentsid = ctx.query.commentsid
 		if(ctx.query.addedbyuser) data.addedbyuser = ctx.query.addedbyuser
-		//if(ctx.query.currentuser) data.currentuser = ctx.query.currentuser
 		const rate = await new Rate(dbName)
-		await rate.addRate(data.questionsid, data.commentsid, body.rate, data.addedbyuser, 1)
+		await rate.addRate(data.questionsid, data.commentsid, body.rate, data.addedbyuser, ctx.session.username)
 		// redirect to the home page
 		ctx.redirect(`/question?msg=${data.questionsid}`)
 	} catch(err) {

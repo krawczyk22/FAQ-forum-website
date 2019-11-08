@@ -18,11 +18,11 @@ router.post('/addQuestion', koaBody, async ctx => {
 		const extension = mime.extension(type)
 		if(extension !== 'bin')
 		{
-			await question.addQuestion(body.title, body.description, `${body.title}.${extension}`, 1)
+			await question.addQuestion(body.title, body.description, `${body.title}.${extension}`, ctx.session.username)
 			await question.uploadQuestionImage(path, type, body.title)
 		}
 		else 
-			await question.addQuestion(body.title, body.description, '', 1)
+			await question.addQuestion(body.title, body.description, '', ctx.session.username)
 		// redirect to the home page
 		ctx.redirect(`/`)
 	} catch(err) {
@@ -38,7 +38,7 @@ router.get('/question', async ctx => {
 		FROM comments INNER JOIN users 
 		ON comments.addedbyuserid = users.id 
 		WHERE questionsid = ${data.msg};`
-		
+
 	const db = await Database.open(dbName)
 	const questionsdatafromdatabase = await db.all(sqlquestions)
 	const commentsdatafromdatabase = await db.all(sqlcomments)
