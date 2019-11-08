@@ -24,6 +24,46 @@ describe('getCommentByIdQuestion()', () => {
 		done()
 	})
 
+	test('get a comment by id not a special sign', async done => {
+		expect.assertions(1)
+		const comment = await new Comments()
+		await expect( comment.getCommentByIdQuestion('#') )
+			.rejects.toEqual( Error('question id must be a number') )
+		done()
+	})
+
+	test('get a comment by id null', async done => {
+		expect.assertions(1)
+		const comment = await new Comments()
+		await expect( comment.getCommentByIdQuestion(null) )
+			.rejects.toEqual( Error('question id cannot be null') )
+		done()
+	})
+
+	test('get a comment by id not an integer', async done => {
+		expect.assertions(1)
+		const comment = await new Comments()
+		await expect( comment.getCommentByIdQuestion(1.2) )
+			.rejects.toEqual( Error('question id must be an integer') )
+		done()
+	})
+
+	test('get a comment by id that does not exist', async done => {
+		expect.assertions(1)
+		const comment = await new Comments()
+		await expect( comment.getCommentByIdQuestion(9999999999999) )
+			.rejects.toEqual( Error('comment with the id "9999999999999" is not found') )
+		done()
+	})
+
+	test('get a comment by id as a negative number', async done => {
+		expect.assertions(1)
+		const comment = await new Comments()
+		await expect( comment.getCommentByIdQuestion(-1) )
+			.rejects.toEqual( Error('question id must be bigger than 1') )
+		done()
+	})
+
 })
 
 describe('addComment()', () => {
@@ -51,11 +91,27 @@ describe('addComment()', () => {
 			.rejects.toEqual( Error('you need to be logged in to add comments') )
 		done()
 	})
+
+	test('add a comment with questionsid as null', async done => {
+		expect.assertions(1)
+		const comment = await new Comments()
+		await expect( comment.addComment(null, 'samplecontent', 1) )
+			.rejects.toEqual( Error('questionsid cannot be null') )
+		done()
+	})
 	
 	test('add a comment with question id not a number', async done => {
 		expect.assertions(1)
 		const comment = await new Comments()
 		await expect( comment.addComment('questionid', 'content', 1) )
+			.rejects.toEqual( Error('question id must be a number') )
+		done()
+	})
+
+	test('add a comment with question id is a special sign', async done => {
+		expect.assertions(1)
+		const comment = await new Comments()
+		await expect( comment.addComment('#', 'content', 1) )
 			.rejects.toEqual( Error('question id must be a number') )
 		done()
 	})
@@ -68,6 +124,14 @@ describe('addComment()', () => {
 		done()
 	})
 
+	test('add a comment with no user who added the question is a special sign', async done => {
+		expect.assertions(1)
+		const comment = await new Comments()
+		await expect( comment.addComment(1, 'content', '#') )
+			.rejects.toEqual( Error('user id must be a number') )
+		done()
+	})
+
 	test('add a comment to question where question id is not an integer', async done => {
 		expect.assertions(1)
 		const comment = await new Comments()
@@ -76,11 +140,27 @@ describe('addComment()', () => {
 		done()
 	})
 
-	test('aadd a comment to question where question id is not an integer', async done => {
+	test('add a comment to question where user id is not an integer', async done => {
 		expect.assertions(1)
 		const comment = await new Comments()
 		await expect( comment.addComment(1, 'content', 1.5) )
 			.rejects.toEqual( Error('user id must be an integer') )
+		done()
+	})
+
+	test('add a comment with questionid as a negative number', async done => {
+		expect.assertions(1)
+		const comment = await new Comments()
+		await expect( comment.addComment(-1, 'content', 1) )
+			.rejects.toEqual( Error('question id must be bigger than 1') )
+		done()
+	})
+
+	test('add a comment with userid as a negative number', async done => {
+		expect.assertions(1)
+		const comment = await new Comments()
+		await expect( comment.addComment(1, 'content', -1) )
+			.rejects.toEqual( Error('user id must be bigger than 1') )
 		done()
 	})
 
@@ -115,11 +195,62 @@ describe('updateCommentIsCorrect()', () => {
 		done()
 	})
 
+	test('update a comment as questionsid is null', async done => {
+		expect.assertions(1)
+		const comment = await new Comments()
+		await comment.addComment(2, 3, 1)
+		await expect( comment.updateCommentIsCorrect(null, 1, 1, 1) )
+			.rejects.toEqual( Error('questionsid cannot be null') )
+		done()
+	})
+
+	test('update a comment as commentid is null', async done => {
+		expect.assertions(1)
+		const comment = await new Comments()
+		await comment.addComment(2, 3, 1)
+		await expect( comment.updateCommentIsCorrect(1, null, 1, 1) )
+			.rejects.toEqual( Error('commentid cannot be null') )
+		done()
+	})
+
+	test('update a comment as addedbyuserid is null', async done => {
+		expect.assertions(1)
+		const comment = await new Comments()
+		await comment.addComment(2, 3, 1)
+		await expect( comment.updateCommentIsCorrect(1, 1, null, 1) )
+			.rejects.toEqual( Error('addedbyuserid cannot be null') )
+		done()
+	})
+
 	test('update a comment where question id is not a number', async done => {
 		expect.assertions(1)
 		const comment = await new Comments()
 		await expect( comment.updateCommentIsCorrect('questionid', 1, 1, 1) )
 			.rejects.toEqual( Error('question id must be a number') )
+		done()
+	})
+
+	test('update a comment where question id is a special sign', async done => {
+		expect.assertions(1)
+		const comment = await new Comments()
+		await expect( comment.updateCommentIsCorrect('#', 1, 1, 1) )
+			.rejects.toEqual( Error('question id must be a number') )
+		done()
+	})
+
+	test('update a comment where comment id is not a number', async done => {
+		expect.assertions(1)
+		const comment = await new Comments()
+		await expect( comment.updateCommentIsCorrect(1, 'commentid', 1, 1) )
+			.rejects.toEqual( Error('comment id must be a number') )
+		done()
+	})
+
+	test('update a comment where comment id is a special sign', async done => {
+		expect.assertions(1)
+		const comment = await new Comments()
+		await expect( comment.updateCommentIsCorrect(1, '#', 1, 1) )
+			.rejects.toEqual( Error('comment id must be a number') )
 		done()
 	})
 
@@ -131,11 +262,91 @@ describe('updateCommentIsCorrect()', () => {
 		done()
 	})
 
+	test('update a comment where user who added the question is a special sign', async done => {
+		expect.assertions(1)
+		const comment = await new Comments()
+		await expect( comment.updateCommentIsCorrect(1, 1, '#', 1) )
+			.rejects.toEqual( Error('user id who added the question must be a number') )
+		done()
+	})
+
 	test('update a comment where user who tries to update the question is not a number', async done => {
 		expect.assertions(1)
 		const comment = await new Comments()
 		await expect( comment.updateCommentIsCorrect(1, 1, 1, 'currentuser') )
 			.rejects.toEqual( Error('current user id must be a number') )
+		done()
+	})
+
+	test('update a comment where user who tries to update the question is a special sign', async done => {
+		expect.assertions(1)
+		const comment = await new Comments()
+		await expect( comment.updateCommentIsCorrect(1, 1, 1, '#') )
+			.rejects.toEqual( Error('current user id must be a number') )
+		done()
+	})
+
+	test('update a comment where question id is not an integer', async done => {
+		expect.assertions(1)
+		const comment = await new Comments()
+		await expect( comment.updateCommentIsCorrect(1.5, 1, 1, 1) )
+			.rejects.toEqual( Error('question id must be an integer') )
+		done()
+	})
+
+	test('update a comment where commentid is not an integer', async done => {
+		expect.assertions(1)
+		const comment = await new Comments()
+		await expect( comment.updateCommentIsCorrect(1, 1.5, 1, 1) )
+			.rejects.toEqual( Error('commentid must be an integer') )
+		done()
+	})
+
+	test('update a comment where addedbyuserid is not an integer', async done => {
+		expect.assertions(1)
+		const comment = await new Comments()
+		await expect( comment.updateCommentIsCorrect(1, 1, 1.5, 1) )
+			.rejects.toEqual( Error('addedbyuserid must be an integer') )
+		done()
+	})
+
+	test('update a comment where currentuser is not an integer', async done => {
+		expect.assertions(1)
+		const comment = await new Comments()
+		await expect( comment.updateCommentIsCorrect(1, 1, 1, 1.5) )
+			.rejects.toEqual( Error('currentuser must be an integer') )
+		done()
+	})
+
+	test('update a comment where questionsid is negative', async done => {
+		expect.assertions(1)
+		const comment = await new Comments()
+		await expect( comment.updateCommentIsCorrect(-1, 1, 1, 1) )
+			.rejects.toEqual( Error('question id must be bigger than 1') )
+		done()
+	})
+
+	test('update a comment where commentid is negative', async done => {
+		expect.assertions(1)
+		const comment = await new Comments()
+		await expect( comment.updateCommentIsCorrect(1, -1, 1, 1) )
+			.rejects.toEqual( Error('comment id must be bigger than 1') )
+		done()
+	})
+
+	test('update a comment where addedbyuserid is negative', async done => {
+		expect.assertions(1)
+		const comment = await new Comments()
+		await expect( comment.updateCommentIsCorrect(1, 1, -1, 1) )
+			.rejects.toEqual( Error('addedbyuser id must be bigger than 1') )
+		done()
+	})
+
+	test('update a comment where currentuser is negative', async done => {
+		expect.assertions(1)
+		const comment = await new Comments()
+		await expect( comment.updateCommentIsCorrect(1, 1, 1, -1) )
+			.rejects.toEqual( Error('currentuser must be bigger than 1') )
 		done()
 	})
 

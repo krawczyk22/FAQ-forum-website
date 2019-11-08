@@ -34,13 +34,15 @@ router.get('/question', async ctx => {
 	const data = {}
 	if(ctx.query.msg) data.msg = ctx.query.msg
 	const sqlquestions = `SELECT id, title, description, imagelink FROM questions WHERE id = ${data.msg};`
-	const sqlcomments = `SELECT users.user, comments.id, content, addedbyuserid, questionsid, iscorrect FROM comments INNER JOIN users ON comments.addedbyuserid = users.id WHERE questionsid = ${data.msg};`
+	const sqlcomments = `SELECT users.user, comments.id, content, addedbyuserid, questionsid, iscorrect 
+		FROM comments INNER JOIN users 
+		ON comments.addedbyuserid = users.id 
+		WHERE questionsid = ${data.msg};`
+		
 	const db = await Database.open(dbName)
 	const questionsdatafromdatabase = await db.all(sqlquestions)
 	const commentsdatafromdatabase = await db.all(sqlcomments)
 	await db.close()
-	console.log(questionsdatafromdatabase)
-	console.log(commentsdatafromdatabase)
 	if(ctx.session.authorised !== true)
 		await ctx.render('question', {title: questionsdatafromdatabase, commentsfromdatabase: commentsdatafromdatabase})
 	else

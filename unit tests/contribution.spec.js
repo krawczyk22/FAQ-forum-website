@@ -21,6 +21,29 @@ describe('takeFivePointsOff()', () => {
 		await expect( contribution.takeFivePointsOff('') )
 			.rejects.toEqual( Error('missing user id') )
 		done()
+	})
+	
+	test('perform the operation with user id as null', async done => {
+		expect.assertions(1)
+		const contribution = await new Contribution()
+		await expect( contribution.takeFivePointsOff(null) )
+			.rejects.toEqual( Error('userid cannot be null') )
+		done()
+	})
+	test('perform the operation with user id as a special sign', async done => {
+		expect.assertions(1)
+		const contribution = await new Contribution()
+		await expect( contribution.takeFivePointsOff('#') )
+			.rejects.toEqual( Error('user id must be a number') )
+		done()
+	})
+	
+	test('perform the operation with user id as negative number', async done => {
+		expect.assertions(1)
+		const contribution = await new Contribution()
+		await expect( contribution.takeFivePointsOff(-1) )
+			.rejects.toEqual( Error('user id must be bigger than 1') )
+		done()
     })
     
     test('perform the operation with user id as a string', async done => {
@@ -34,8 +57,16 @@ describe('takeFivePointsOff()', () => {
     test('perform the operation with user id that does not exist', async done => {
 		expect.assertions(1)
 		const contribution = await new Contribution()
-		await expect( contribution.takeFivePointsOff(0) )
+		await expect( contribution.takeFivePointsOff(999999999999999999999) )
 			.rejects.toEqual( Error('user has not been found') )
+		done()
+	})
+
+	test('perform the operation with user id that is not an integer', async done => {
+		expect.assertions(1)
+		const contribution = await new Contribution()
+		await expect( contribution.takeFivePointsOff(1.5) )
+			.rejects.toEqual( Error('userid must be an integer') )
 		done()
 	})
 
@@ -67,13 +98,45 @@ describe('addFiftyPoints()', () => {
 		await expect( contribution.addFiftyPoints('userid') )
 			.rejects.toEqual( Error('user id must be a number') )
 		done()
+	})
+	
+	test('perform the operation with user id as a special sign', async done => {
+		expect.assertions(1)
+		const contribution = await new Contribution()
+		await expect( contribution.addFiftyPoints('#') )
+			.rejects.toEqual( Error('user id must be a number') )
+		done()
+	})
+
+	test('perform the operation with user id as a negative number', async done => {
+		expect.assertions(1)
+		const contribution = await new Contribution()
+		await expect( contribution.addFiftyPoints(-1) )
+			.rejects.toEqual( Error('user id must be bigger than 1') )
+		done()
+	})
+	
+	test('perform the operation with user id as null', async done => {
+		expect.assertions(1)
+		const contribution = await new Contribution()
+		await expect( contribution.addFiftyPoints(null) )
+			.rejects.toEqual( Error('userid cannot be null') )
+		done()
     })
     
     test('perform the operation with user id that does not exist', async done => {
 		expect.assertions(1)
 		const contribution = await new Contribution()
-		await expect( contribution.addFiftyPoints(0) )
+		await expect( contribution.addFiftyPoints(999999999999999999999) )
 			.rejects.toEqual( Error('user has not been found') )
+		done()
+	})
+
+	test('perform the operation with user id that is not an integer', async done => {
+		expect.assertions(1)
+		const contribution = await new Contribution()
+		await expect( contribution.addFiftyPoints(1.5) )
+			.rejects.toEqual( Error('userid must be an integer') )
 		done()
 	})
 

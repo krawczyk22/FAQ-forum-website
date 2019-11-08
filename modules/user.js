@@ -29,7 +29,9 @@ module.exports = class User {
 		try {
 			if(user.length === 0 && pass.length === 0) throw new Error('missing username and password')
 			if(user.length === 0) throw new Error('missing username')
+			if(user.length < 4) throw new Error('username must be at least 4 characters long')
 			if(pass.length === 0) throw new Error('missing password')
+			if(pass.length < 8) throw new Error('password must be at least 8 characters long')
 			let sql = `SELECT COUNT(id) as records FROM users WHERE user="${user}";`
 			const data = await this.db.get(sql)
 			if(data.records !== 0) throw new Error(`username "${user}" already in use`)
@@ -49,6 +51,8 @@ module.exports = class User {
 
 	async login(username, password) {
 		try {
+			if(username.length < 4) throw new Error('username must be at least 4 characters long')
+			if(password.length < 8) throw new Error('password must be at least 8 characters long')
 			let sql = `SELECT count(id) AS count FROM users WHERE user="${username}";`
 			const records = await this.db.get(sql)
 			if(!records.count) throw new Error(`username "${username}" not found`)

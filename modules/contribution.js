@@ -26,8 +26,11 @@ module.exports = class Contribution {
 
     async takeFivePointsOff(userid) {
 		try {
+            if(userid == null) throw new Error('userid cannot be null')
 			if(userid.length === 0) throw new Error('missing user id')
             if(isNaN(userid) == true) throw new Error('user id must be a number')
+            if(userid % 1 != 0) throw new Error('userid must be an integer')
+            if(userid < 1) throw new Error('user id must be bigger than 1')
             let checkUsernameSql = `SELECT COUNT(id) as records FROM users WHERE id = ${userid};`
             let result = await this.db.get(checkUsernameSql)
             if(result.records === 0) throw new Error('user has not been found')
@@ -41,8 +44,11 @@ module.exports = class Contribution {
     
     async addFiftyPoints(userid) {
 		try {
+            if(userid == null) throw new Error('userid cannot be null')
 			if(userid.length === 0) throw new Error('missing user id')
             if(isNaN(userid) == true) throw new Error('user id must be a number')
+            if(userid % 1 != 0) throw new Error('userid must be an integer')
+            if(userid < 1) throw new Error('user id must be bigger than 1')
             let checkUsernameSql = `SELECT COUNT(id) as records FROM users WHERE id = ${userid};`
             let result = await this.db.get(checkUsernameSql)
             if(result.records === 0) throw new Error('user has not been found')

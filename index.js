@@ -43,7 +43,7 @@ app.use(contributions.routes());
 app.use(rates.routes());
 app.use(questions.routes());
 
-const defaultPort = 8080
+const defaultPort = 8081
 const port = process.env.PORT || defaultPort
 const dbName = 'website.db'
 const saltRounds = 10
