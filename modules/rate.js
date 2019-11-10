@@ -26,6 +26,7 @@ module.exports = class Rate {
 
     async addRate(questionsid, commentsid, rate, addedbyuser, currentuser) {
 		try {
+
 			if(isNaN(questionsid) == true) throw new Error('question id must be a number')
 			if(isNaN(commentsid) == true) throw new Error('comment id must be a number')
             if(isNaN(addedbyuser) == true) throw new Error('user id must be a number')
@@ -43,6 +44,12 @@ module.exports = class Rate {
 			if(rate == null) throw new Error('missing rate value')
 			if(addedbyuser == null) throw new Error('missing addedbyuser value')
 			if(currentuser == null) throw new Error('missing currentuser value')
+
+			if(questionsid.length === 0) throw new Error('missing questionsid')
+			if(commentsid.length === 0) throw new Error('missing commentsid')
+			if(rate.length === 0) throw new Error('missing rate')
+			if(addedbyuser.length === 0) throw new Error('missing addedbyuser')
+			if(currentuser.length === 0) throw new Error('missing currentuser')
 
 			if(questionsid < 1) throw new Error('question id must be bigger than 1')
 			if(commentsid < 1) throw new Error('comments id must be bigger than 1')

@@ -40,7 +40,10 @@ router.get('/question', async ctx => {
 		WHERE questionsid = ${data.msg};`
 
 	const db = await Database.open(dbName)
+	//const question = await new Question(dbName)
 	const questionsdatafromdatabase = await db.all(sqlquestions)
+	//const questionsdatafromdatabase = await question.getQuestion(data.msg)
+	console.log(questionsdatafromdatabase)
 	const commentsdatafromdatabase = await db.all(sqlcomments)
 	await db.close()
 	if(ctx.session.authorised !== true)

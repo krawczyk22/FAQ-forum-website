@@ -7,7 +7,6 @@ const dbName = 'website.db'
 router.post('/takeFivePointsOff', async ctx => {
 	try {
 		// extract the data from the request
-		const body = ctx.request.body
 		const data = {}
 		if(ctx.query.userid) data.userid = ctx.query.userid
 		if(ctx.query.questionsid) data.questionsid = ctx.query.questionsid

@@ -226,6 +226,46 @@ describe('addRate()', () => {
 		await expect( rate.addRate(1, 1, 1, 1, -1) )
 			.rejects.toEqual( Error('currentuser id must be bigger than 1') )
 		done()
-    })
+	})
+	
+	test('add questionsid as a zero length', async done => {
+		expect.assertions(1)
+		const rate = await new Rates()
+		await expect( rate.addRate('', 1, 1, 1, 1) )
+			.rejects.toEqual( Error('missing questionsid') )
+		done()
+	})
+
+	test('add commentsid as a zero length', async done => {
+		expect.assertions(1)
+		const rate = await new Rates()
+		await expect( rate.addRate(1, '', 1, 1, 1) )
+			.rejects.toEqual( Error('missing commentsid') )
+		done()
+	})
+
+	test('add rate as a zero length', async done => {
+		expect.assertions(1)
+		const rate = await new Rates()
+		await expect( rate.addRate(1, 1, '', 1, 1) )
+			.rejects.toEqual( Error('missing rate') )
+		done()
+	})
+
+	test('add addedbyuser as a zero length', async done => {
+		expect.assertions(1)
+		const rate = await new Rates()
+		await expect( rate.addRate(1, 1, 1, '', 1) )
+			.rejects.toEqual( Error('missing addedbyuser') )
+		done()
+	})
+
+	test('add currentuser as a zero length', async done => {
+		expect.assertions(1)
+		const rate = await new Rates()
+		await expect( rate.addRate(1, 1, 1, 1, '') )
+			.rejects.toEqual( Error('missing currentuser') )
+		done()
+	})
 
 })

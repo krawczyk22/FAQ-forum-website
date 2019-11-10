@@ -25,7 +25,6 @@ router.post('/addComment', async ctx => {
 
 router.post('/updateCommentIsCorrect', async ctx => {
 	try {
-		const body = ctx.request.body
 		// extract the data from the request
 		const data = {}
 		if(ctx.query.comment) data.comment = ctx.query.comment

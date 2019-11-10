@@ -22,7 +22,6 @@ router.get('/', async ctx => {
 		const db = await Database.open(dbName)
 		const datafromdatabase = await db.all(sql)
 		await db.close()
-		console.log(datafromdatabase)
 		await ctx.render('index', {title: 'Questions', titlesfromdatabase: datafromdatabase})
 		//await ctx.render('index')
 	} catch(err) {
@@ -48,7 +47,6 @@ router.post('/register', koaBody, async ctx => {
 	try {
 		// extract the data from the request
 		const body = ctx.request.body
-		console.log(body)
 		const {path, type} = ctx.request.files.avatar
 		// call the functions in the module
 		const user = await new User(dbName)
@@ -78,7 +76,6 @@ router.post('/login', async ctx => {
 		const body = ctx.request.body
 		const user = await new User(dbName)
 		const idusername = await user.login(body.user, body.pass)
-		console.log(idusername)
 		ctx.session.authorised = true
 		ctx.session.username = idusername
 		return ctx.redirect('/?msg=you are now logged in...')

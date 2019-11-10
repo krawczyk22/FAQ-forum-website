@@ -20,6 +20,14 @@ describe('addQuestion()', () => {
 		done()
 	})
 
+	test('add question with user id smaller than 1', async done => {
+		expect.assertions(1)
+		const question = await new Questions()
+		await expect( question.addQuestion('sampletitle', 'samplecdescription','sampleimagenilk',-1) )
+			.rejects.toEqual( Error('addedbyuserid must be bigger than 1') )
+		done()
+	})
+
 	test('add question with no title nor description', async done => {
 		expect.assertions(1)
 		const question = await new Questions()
@@ -81,6 +89,38 @@ describe('addQuestion()', () => {
 		const question = await new Questions()
 		await expect( question.addQuestion('sampletitle', 'sampledescription','sampleimagenilk',null) )
 			.rejects.toEqual( Error('you need to be logged in to add questions') )
+		done()
+	})
+
+	test('add question with title as null', async done => {
+		expect.assertions(1)
+		const question = await new Questions()
+		await expect( question.addQuestion(null, 'sampledescription','sampleimagenilk', 1) )
+			.rejects.toEqual( Error('title cannot be null') )
+		done()
+	})
+
+	test('add question with description as null', async done => {
+		expect.assertions(1)
+		const question = await new Questions()
+		await expect( question.addQuestion('sampletitle', null,'sampleimagenilk', 1) )
+			.rejects.toEqual( Error('description cannot be null') )
+		done()
+	})
+
+	test('add question with imagelink as null', async done => {
+		expect.assertions(1)
+		const question = await new Questions()
+		await expect( question.addQuestion('sampletitle', 'sampledescription' , null, 1) )
+			.rejects.toEqual( Error('imagelink cannot be null') )
+		done()
+	})
+
+	test('add question with addedbyuserid as length zero', async done => {
+		expect.assertions(1)
+		const question = await new Questions()
+		await expect( question.addQuestion('sampletitle', 'sampledescription' , 'sampleimagelink', '') )
+			.rejects.toEqual( Error('missing addedbyuserid') )
 		done()
 	})
 
@@ -165,12 +205,76 @@ describe('updateQuestion()', () => {
 
 describe('getQuestion()', () => {
     
-	test('get the questions', async done => {
+	test('get the question', async done => {
 		expect.assertions(1)
 		const question = await new Questions()
 		await question.addQuestion('sampletitle', 'sampledescription','sampleimagenilk', 1)
-		const results = await question.getQuestion()
-		expect(results).toEqual({"addedbyuserid": 1, "description": "sampledescription", "id": 1, "imagelink": "sampleimagenilk", "solved": 0, "title": "sampletitle"})
+		const results = await question.getQuestion(1)
+		expect(results).toEqual({"description": "sampledescription", "id": 1, "imagelink": "sampleimagenilk", "title": "sampletitle"})
 		done()
 	})
+
+	test('get the question from null value', async done => {
+		expect.assertions(1)
+		const question = await new Questions()
+		await question.addQuestion('sampletitle', 'sampledescription','sampleimagenilk', 1)
+		await expect( question.getQuestion(null) )
+			.rejects.toEqual( Error('questionid cannot be null') )
+		done()
+	})
+
+	test('get the question from negative value', async done => {
+		expect.assertions(1)
+		const question = await new Questions()
+		await question.addQuestion('sampletitle', 'sampledescription','sampleimagenilk', 1)
+		await expect( question.getQuestion(-1) )
+			.rejects.toEqual( Error('question id must be bigger than 1') )
+		done()
+	})
+
+	test('get the question from no value', async done => {
+		expect.assertions(1)
+		const question = await new Questions()
+		await question.addQuestion('sampletitle', 'sampledescription','sampleimagenilk', 1)
+		await expect( question.getQuestion('') )
+			.rejects.toEqual( Error('missing question') )
+		done()
+	})
+
+	test('get the question from value that is not a number', async done => {
+		expect.assertions(1)
+		const question = await new Questions()
+		await question.addQuestion('sampletitle', 'sampledescription','sampleimagenilk', 1)
+		await expect( question.getQuestion('number') )
+			.rejects.toEqual( Error('question id must be a number') )
+		done()
+	})
+
+	test('get the question from value that is a special sign', async done => {
+		expect.assertions(1)
+		const question = await new Questions()
+		await question.addQuestion('sampletitle', 'sampledescription','sampleimagenilk', 1)
+		await expect( question.getQuestion('#') )
+			.rejects.toEqual( Error('question id must be a number') )
+		done()
+	})
+
+	test('get the question from value that is not an integer', async done => {
+		expect.assertions(1)
+		const question = await new Questions()
+		await question.addQuestion('sampletitle', 'sampledescription','sampleimagenilk', 1)
+		await expect( question.getQuestion(1.5) )
+			.rejects.toEqual( Error('questionid must be an integer') )
+		done()
+	})
+
+	test('get the question from value that does not exist', async done => {
+		expect.assertions(1)
+		const question = await new Questions()
+		await question.addQuestion('sampletitle', 'sampledescription','sampleimagenilk', 1)
+		await expect( question.getQuestion(9999999999999) )
+			.rejects.toEqual( Error('question with the id "9999999999999" is not found') )
+		done()
+	})
+
 })

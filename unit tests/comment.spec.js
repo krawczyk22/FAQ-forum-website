@@ -24,7 +24,7 @@ describe('getCommentByIdQuestion()', () => {
 		done()
 	})
 
-	test('get a comment by id not a special sign', async done => {
+	test('get a comment by id a special sign', async done => {
 		expect.assertions(1)
 		const comment = await new Comments()
 		await expect( comment.getCommentByIdQuestion('#') )
@@ -64,6 +64,14 @@ describe('getCommentByIdQuestion()', () => {
 		done()
 	})
 
+	test('get a comment by id as zero length', async done => {
+		expect.assertions(1)
+		const comment = await new Comments()
+		await expect( comment.getCommentByIdQuestion('') )
+			.rejects.toEqual( Error('missing questionsid of the question') )
+		done()
+	})
+
 })
 
 describe('addComment()', () => {
@@ -81,6 +89,14 @@ describe('addComment()', () => {
 		const comment = await new Comments()
 		await expect( comment.addComment(1, '', 1) )
 			.rejects.toEqual( Error('missing content of the question') )
+		done()
+	})
+
+	test('add a comment with content as null', async done => {
+		expect.assertions(1)
+		const comment = await new Comments()
+		await expect( comment.addComment(1, null, 1) )
+			.rejects.toEqual( Error('content cannot be null') )
 		done()
 	})
 
@@ -161,6 +177,22 @@ describe('addComment()', () => {
 		const comment = await new Comments()
 		await expect( comment.addComment(1, 'content', -1) )
 			.rejects.toEqual( Error('user id must be bigger than 1') )
+		done()
+	})
+
+	test('add a comment with question id zero length', async done => {
+		expect.assertions(1)
+		const comment = await new Comments()
+		await expect( comment.addComment('', 'content', 1) )
+			.rejects.toEqual( Error('missing questionsid of the question') )
+		done()
+	})
+
+	test('add a comment with user id zero length', async done => {
+		expect.assertions(1)
+		const comment = await new Comments()
+		await expect( comment.addComment(1, 'content', '') )
+			.rejects.toEqual( Error('missing addedbyuserid of the question') )
 		done()
 	})
 
@@ -347,6 +379,38 @@ describe('updateCommentIsCorrect()', () => {
 		const comment = await new Comments()
 		await expect( comment.updateCommentIsCorrect(1, 1, 1, -1) )
 			.rejects.toEqual( Error('currentuser must be bigger than 1') )
+		done()
+	})
+
+	test('update a comment where questionsid is zero length', async done => {
+		expect.assertions(1)
+		const comment = await new Comments()
+		await expect( comment.updateCommentIsCorrect('', 1, 1, 1) )
+			.rejects.toEqual( Error('missing questionsid of the comment') )
+		done()
+	})
+
+	test('update a comment where commentid is zero length', async done => {
+		expect.assertions(1)
+		const comment = await new Comments()
+		await expect( comment.updateCommentIsCorrect(1, '', 1, 1) )
+			.rejects.toEqual( Error('missing commentid of the comment') )
+		done()
+	})
+
+	test('update a comment where addedbyuserid is zero length', async done => {
+		expect.assertions(1)
+		const comment = await new Comments()
+		await expect( comment.updateCommentIsCorrect(1, 1, '', 1) )
+			.rejects.toEqual( Error('missing addedbyuserid of the comment') )
+		done()
+	})
+
+	test('update a comment where currentuser is zero length', async done => {
+		expect.assertions(1)
+		const comment = await new Comments()
+		await expect( comment.updateCommentIsCorrect(1, 1, 1, '') )
+			.rejects.toEqual( Error('missing currentuser of the comment') )
 		done()
 	})
 

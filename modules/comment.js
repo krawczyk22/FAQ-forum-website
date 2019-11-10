@@ -26,9 +26,13 @@ module.exports = class Comment {
 
     async addComment(questionsid, content, addedbyuserid) {
 		try {
+			if(content == null) throw new Error('content cannot be null')
 			if(content.length === 0) throw new Error('missing content of the question')
 			if(addedbyuserid == null) throw new Error('you need to be logged in to add comments')
 			if(questionsid == null) throw new Error('questionsid cannot be null')
+
+			if(questionsid.length === 0) throw new Error('missing questionsid of the question')
+			if(addedbyuserid.length === 0) throw new Error('missing addedbyuserid of the question')
 
 			if(isNaN(questionsid) == true) throw new Error('question id must be a number')
 			if(isNaN(addedbyuserid) == true) throw new Error('user id must be a number')
@@ -49,6 +53,7 @@ module.exports = class Comment {
 	async getCommentByIdQuestion(questionsid) {
 		try {
 			if(questionsid == null) throw new Error('question id cannot be null')
+			if(questionsid.length === 0) throw new Error('missing questionsid of the question')
 			if(isNaN(questionsid) == true) throw new Error('question id must be a number')
 			if(questionsid % 1 != 0) throw new Error('question id must be an integer')
 			if(questionsid < 1) throw new Error('question id must be bigger than 1')
@@ -74,6 +79,11 @@ module.exports = class Comment {
 			if(commentid == null) throw new Error('commentid cannot be null')
 			if(addedbyuserid == null) throw new Error('addedbyuserid cannot be null')
 			if(currentuser == null) throw new Error('you are not logged in')
+
+			if(questionsid.length === 0) throw new Error('missing questionsid of the comment')
+			if(commentid.length === 0) throw new Error('missing commentid of the comment')
+			if(addedbyuserid.length === 0) throw new Error('missing addedbyuserid of the comment')
+			if(currentuser.length === 0) throw new Error('missing currentuser of the comment')
 
 			if(questionsid % 1 != 0) throw new Error('question id must be an integer')
 			if(commentid % 1 != 0) throw new Error('commentid must be an integer')
