@@ -84,11 +84,30 @@ describe('addComment()', () => {
 		done()
 	})
 
+	test('check if comment is in database', async done => {
+		expect.assertions(1)
+		const comment = await new Comments()
+		await comment.addComment(1, 'sampledescription', 1)
+		await comment.addComment(1, 'sampledesc', 1)
+		await comment.addComment(2, 'samp', 1)
+		const results = await comment.getCommentByIdQuestion(1)
+		expect(results).toEqual({"addedbyuserid": 1, "content": "sampledescription", "id": 1, "iscorrect": 0, "questionsid": 1})
+		done()
+	})
+
 	test('add a comment with no content', async done => {
 		expect.assertions(1)
 		const comment = await new Comments()
 		await expect( comment.addComment(1, '', 1) )
 			.rejects.toEqual( Error('missing content of the question') )
+		done()
+	})
+
+	test('add a comment which is too big', async done => {
+		expect.assertions(1)
+		const comment = await new Comments()
+		await expect( comment.addComment(1, 'qwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwert', 1) )
+			.rejects.toEqual( Error('your comment can be 500 characters long only') )
 		done()
 	})
 

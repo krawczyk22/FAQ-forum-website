@@ -36,6 +36,22 @@ describe('addQuestion()', () => {
 		done()
 	})
 
+	test('add question with title longer than 100 characters', async done => {
+		expect.assertions(1)
+		const question = await new Questions()
+		await expect( question.addQuestion('qwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwert', 'short description here','sampleimagenilk',1) )
+			.rejects.toEqual( Error('title cannot contain more than 100 characters') )
+		done()
+	})
+
+	test('add question with no description longer than 300 characters', async done => {
+		expect.assertions(1)
+		const question = await new Questions()
+		await expect( question.addQuestion('short title here', 'qwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwert','sampleimagenilk',1) )
+			.rejects.toEqual( Error('description cannot contain more than 300 characters') )
+		done()
+	})
+
 	test('add question with no logging in', async done => {
 		expect.assertions(1)
 		const question = await new Questions()

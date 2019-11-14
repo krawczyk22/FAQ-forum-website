@@ -44,12 +44,13 @@
 		<h1>Questions</h1>
 		<table>
 			<tr>
-				<th colspan="4">{{title}}</th>
+				<th colspan="5">{{title}}</th>
 			</tr>
 			<tr>
 				<th>ID</th>
 				<th>Question</th>
 				<th>Posting user</th>
+				<th>Date added</th>
 				<th>Is solved</th>
 			</tr>
 			{{#each titlesfromdatabase}}
@@ -57,6 +58,7 @@
 					<td>{{this.id}}</td>
 					<td><a href="/question?msg={{this.id}}">{{this.title}}</a></td>
 					<td>{{this.user}}</td>
+					<td>{{this.dateadded}}</td>
 					{{#if this.solved}}
 						<td>Solved</td>
 						{{else}}

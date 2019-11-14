@@ -33,6 +33,8 @@ router.post('/updateCommentIsCorrect', async ctx => {
 		const comment = await new Comment(dbName)
 		const question = await new Question(dbName)
 		const contribution = await new Contribution(dbName)
+		console.log(data.addedbyuser)
+		console.log(ctx.session.username)
 		await comment.updateCommentIsCorrect(data.questionsid, data.comment, data.addedbyuser, ctx.session.username)
 		await question.updateQuestionIsSolved(data.questionsid)
 		await contribution.addFiftyPoints(data.addedbyuser)

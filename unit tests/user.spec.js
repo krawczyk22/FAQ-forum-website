@@ -49,7 +49,7 @@ describe('register()', () => {
 	test('error if username is less than 4 characters long', async done => {
 		expect.assertions(1)
 		const account = await new Accounts()
-		await expect( account.register('doe', '') )
+		await expect( account.register('doe', 'password') )
 			.rejects.toEqual( Error('username must be at least 4 characters long') )
 		done()
 	})
@@ -59,6 +59,46 @@ describe('register()', () => {
 		const account = await new Accounts()
 		await expect( account.register('doej', 'qwe') )
 			.rejects.toEqual( Error('password must be at least 8 characters long') )
+		done()
+	})
+
+	test('error if username is null', async done => {
+		expect.assertions(1)
+		const account = await new Accounts()
+		await expect( account.register(null, 'qwerty') )
+			.rejects.toEqual( Error('username cannot be null') )
+		done()
+	})
+
+	test('error if password is null', async done => {
+		expect.assertions(1)
+		const account = await new Accounts()
+		await expect( account.register('username', null) )
+			.rejects.toEqual( Error('password cannot be null') )
+		done()
+	})
+
+	test('error if username and password are null', async done => {
+		expect.assertions(1)
+		const account = await new Accounts()
+		await expect( account.register(null, null) )
+			.rejects.toEqual( Error('username and password cannot be null') )
+		done()
+	})
+
+	test('error if username is longer than 20 characters', async done => {
+		expect.assertions(1)
+		const account = await new Accounts()
+		await expect( account.register('qwertqwertqwertqwertqwertqwert', 'password') )
+			.rejects.toEqual( Error('username cannot contain more than 20 characters') )
+		done()
+	})
+
+	test('error if password is longer than 20 characters', async done => {
+		expect.assertions(1)
+		const account = await new Accounts()
+		await expect( account.register('username', 'qwertqwertqwertqwertqwertqwert') )
+			.rejects.toEqual( Error('password cannot contain more than 20 characters') )
 		done()
 	})
 
@@ -122,6 +162,69 @@ describe('login()', () => {
 		await account.register('doej', 'password')
 		await expect( account.login('doej', 'bad') )
 			.rejects.toEqual( Error('password must be at least 8 characters long') )
+		done()
+	})
+	test('error if username is null', async done => {
+		expect.assertions(1)
+		const account = await new Accounts()
+		await expect( account.login(null, 'qwerty') )
+			.rejects.toEqual( Error('username cannot be null') )
+		done()
+	})
+
+	test('error if password is null', async done => {
+		expect.assertions(1)
+		const account = await new Accounts()
+		await expect( account.login('username', null) )
+			.rejects.toEqual( Error('password cannot be null') )
+		done()
+	})
+
+	test('error if username and password are null', async done => {
+		expect.assertions(1)
+		const account = await new Accounts()
+		await expect( account.login(null, null) )
+			.rejects.toEqual( Error('username and password cannot be null') )
+		done()
+	})
+
+	test('error if blank username and password', async done => {
+		expect.assertions(1)
+		const account = await new Accounts()
+		await expect( account.login('', '') )
+			.rejects.toEqual( Error('missing username and password') )
+		done()
+	})
+
+	test('error if blank username', async done => {
+		expect.assertions(1)
+		const account = await new Accounts()
+		await expect( account.login('', 'password') )
+			.rejects.toEqual( Error('missing username') )
+		done()
+	})
+
+	test('error if blank password', async done => {
+		expect.assertions(1)
+		const account = await new Accounts()
+		await expect( account.login('doej', '') )
+			.rejects.toEqual( Error('missing password') )
+		done()
+	})
+
+	test('error if username is longer than 20 characters', async done => {
+		expect.assertions(1)
+		const account = await new Accounts()
+		await expect( account.login('qwertqwertqwertqwertqwertqwert', 'password') )
+			.rejects.toEqual( Error('username cannot contain more than 20 characters') )
+		done()
+	})
+
+	test('error if password is longer than 20 characters', async done => {
+		expect.assertions(1)
+		const account = await new Accounts()
+		await expect( account.login('username', 'qwertqwertqwertqwertqwertqwert') )
+			.rejects.toEqual( Error('password cannot contain more than 20 characters') )
 		done()
 	})
 

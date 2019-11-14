@@ -33,7 +33,7 @@ router.post('/addQuestion', koaBody, async ctx => {
 router.get('/question', async ctx => {
 	const data = {}
 	if(ctx.query.msg) data.msg = ctx.query.msg
-	const sqlquestions = `SELECT id, title, description, imagelink FROM questions WHERE id = ${data.msg};`
+	const sqlquestions = `SELECT id, title, description, imagelink, addedbyuserid FROM questions WHERE id = ${data.msg};`
 	const sqlcomments = `SELECT users.user, comments.id, content, addedbyuserid, questionsid, iscorrect 
 		FROM comments INNER JOIN users 
 		ON comments.addedbyuserid = users.id 

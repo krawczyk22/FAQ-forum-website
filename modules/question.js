@@ -14,7 +14,7 @@ module.exports = class Question {
 			// we need this table to store the user accounts
 			const sql = 'CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, user TEXT, pass TEXT, contribution INT DEFAULT 0, badge TEXT DEFAULT "none");'
 			await this.db.run(sql)
-			const sql2 = 'CREATE TABLE IF NOT EXISTS questions (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, description TEXT, imagelink TEXT, solved BOOLEAN, addedbyuserid INT);'
+			const sql2 = 'CREATE TABLE IF NOT EXISTS questions (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, description TEXT, imagelink TEXT, solved BOOLEAN, addedbyuserid INT, dateadded TEXT);'
 			await this.db.run(sql2)
 			const sql3 = 'CREATE TABLE IF NOT EXISTS comments (id INTEGER PRIMARY KEY AUTOINCREMENT, questionsid INT, addedbyuserid INT, content TEXT, iscorrect BOOLEAN);'
 			await this.db.run(sql3)
@@ -43,11 +43,21 @@ module.exports = class Question {
 			if(title.length < 8) throw new Error('title must be 8 characters long')
 			if(description.length < 8) throw new Error('description must be 8 characters long')
 
+			if(title.length > 100) throw new Error('title cannot contain more than 100 characters')
+			if(description.length > 300) throw new Error('description cannot contain more than 300 characters')
+
 			if(addedbyuserid.length === 0) throw new Error('missing addedbyuserid')
 			if(isNaN(addedbyuserid) == true) throw new Error('user id must be a number')
 			if(addedbyuserid % 1 != 0) throw new Error('addedbyuserid must be an integer')
 			if(addedbyuserid < 1) throw new Error('addedbyuserid must be bigger than 1')
-			let sql = `INSERT INTO questions(title, description, imagelink, solved, addedbyuserid) VALUES("${title}", "${description}", "${imagelink}", false, "${addedbyuserid}");`
+
+			let date_ob = new Date();
+			let date = ("0" + date_ob.getDate()).slice(-2);
+			let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
+			let year = date_ob.getFullYear();
+			let fulldate = year + "-" + month + "-" + date
+
+			let sql = `INSERT INTO questions(title, description, imagelink, solved, addedbyuserid, dateadded) VALUES("${title}", "${description}", "${imagelink}", false, "${addedbyuserid}", "${fulldate}");`
 			await this.db.run(sql)
 			return true
 		} catch(err) {
@@ -65,6 +75,7 @@ module.exports = class Question {
 			let sqlCheck = `SELECT COUNT(*) as records FROM questions WHERE id = ${questionid};`
 			const recordsCheck = await this.db.get(sqlCheck)
 			if(recordsCheck.records == 0) throw new Error(`question with the id "${questionid}" is not found`)
+
 			let sql = `UPDATE questions SET solved = true WHERE id = ${questionid};`
 			await this.db.run(sql)
 			return true
@@ -83,6 +94,7 @@ module.exports = class Question {
 			let sqlCheck = `SELECT COUNT(*) as records FROM questions WHERE id = ${questionid};`
 			const recordsCheck = await this.db.get(sqlCheck)
 			if(recordsCheck.records == 0) throw new Error(`question with the id "${questionid}" is not found`)
+			
 			let sql = `SELECT id, title, description, imagelink FROM questions WHERE id = ${questionid};`
 			const records = await this.db.get(sql)
 			return records
