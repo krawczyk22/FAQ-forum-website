@@ -29,6 +29,22 @@ router.get('/', async ctx => {
 	}
 })
 
+router.get('/ranking', async ctx => {
+	try {
+		if(ctx.session.authorised !== true) return ctx.redirect('/login?msg=you need to log in')
+		const data = {}
+		if(ctx.query.msg) data.msg = ctx.query.msg
+		const sql = 'SELECT id, user, contribution, badge FROM users'
+		const db = await Database.open(dbName)
+		const datafromdatabase = await db.all(sql)
+		await db.close()
+		await ctx.render('ranking', {rankingfromdatabase: datafromdatabase})
+		//await ctx.render('index')
+	} catch(err) {
+		await ctx.render('error', {message: err.message})
+	}
+})
+
 /**
  * The user registration page.
  *

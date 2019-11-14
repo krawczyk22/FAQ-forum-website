@@ -1,0 +1,34 @@
+
+<!doctype html>
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Home Page</title>
+		<meta name="description" content="form to add new books">
+		<meta name="author" content="Mark Tyers">
+		<link rel="stylesheet" type="text/css" href="style.css">
+	</head>
+	<body>
+		<h1>You are seeing the ranking of the users. Click <a href="/">this</a> to come back to the homepage</h1>
+		<table>
+			<tr>
+				<th colspan="4">Ranking</th>
+			</tr>
+			<tr>
+				<th>ID</th>
+				<th>User</th>
+				<th>Points</th>
+				<th>Badge</th>
+			</tr>
+			{{#each rankingfromdatabase}}
+				<tr>
+					<td>{{this.id}}</td>
+					<td>{{this.user}}</td>
+					<td>{{this.contribution}}</td>
+					<td>{{this.badge}}</td>
+				</tr>
+			{{/each}}
+		</table>
+	</body>
+</html>
