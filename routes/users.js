@@ -1,5 +1,6 @@
 var Router = require('koa-router');
 const User = require('../modules/user.js')
+const Contribution = require('../modules/contribution.js')
 const koaBody = require('koa-body')({multipart: true, uploadDir: '.'})
 const Database = require('sqlite-async')
 const router = new Router()
@@ -15,6 +16,8 @@ const dbName = 'website.db'
  */
 router.get('/', async ctx => {
 	try {
+		const contribution = await new Contribution(dbName)
+		await contribution.updateStars()
 		if(ctx.session.authorised !== true) return ctx.redirect('/login?msg=you need to log in')
 		const data = {}
 		if(ctx.query.msg) data.msg = ctx.query.msg
