@@ -53,14 +53,6 @@ describe('takeFivePointsOff()', () => {
 			.rejects.toEqual( Error('user id must be a number') )
 		done()
     })
-    
-    test('perform the operation with user id that does not exist', async done => {
-		expect.assertions(1)
-		const contribution = await new Contribution()
-		await expect( contribution.takeFivePointsOff(999999999999999999999) )
-			.rejects.toEqual( Error('user has not been found') )
-		done()
-	})
 
 	test('perform the operation with user id that is not an integer', async done => {
 		expect.assertions(1)
@@ -123,14 +115,6 @@ describe('addFiftyPoints()', () => {
 			.rejects.toEqual( Error('userid cannot be null') )
 		done()
     })
-    
-    test('perform the operation with user id that does not exist', async done => {
-		expect.assertions(1)
-		const contribution = await new Contribution()
-		await expect( contribution.addFiftyPoints(999999999999999999999) )
-			.rejects.toEqual( Error('user has not been found') )
-		done()
-	})
 
 	test('perform the operation with user id that is not an integer', async done => {
 		expect.assertions(1)

@@ -31,9 +31,6 @@ module.exports = class Contribution {
             if(isNaN(userid) == true) throw new Error('user id must be a number')
             if(userid % 1 != 0) throw new Error('userid must be an integer')
             if(userid < 1) throw new Error('user id must be bigger than 1')
-            let checkUsernameSql = `SELECT COUNT(id) as records FROM users WHERE id = ${userid};`
-            let result = await this.db.get(checkUsernameSql)
-            if(result.records === 0) throw new Error('user has not been found')
 
 			let sql = `UPDATE users SET contribution = contribution - 5 WHERE id = ${userid};`
 			await this.db.run(sql)
@@ -50,9 +47,6 @@ module.exports = class Contribution {
             if(isNaN(userid) == true) throw new Error('user id must be a number')
             if(userid % 1 != 0) throw new Error('userid must be an integer')
             if(userid < 1) throw new Error('user id must be bigger than 1')
-            let checkUsernameSql = `SELECT COUNT(id) as records FROM users WHERE id = ${userid};`
-            let result = await this.db.get(checkUsernameSql)
-            if(result.records === 0) throw new Error('user has not been found')
 
 			let sql = `UPDATE users SET contribution = contribution + 50 WHERE id = ${userid};`
 			await this.db.run(sql)
@@ -90,7 +84,7 @@ module.exports = class Contribution {
             return true
             
 		} catch(err) {
-			throw err
+			//throw err
 		}
 	}
     
