@@ -987,3 +987,380 @@ describe('userRanking', () => {
 	}, 16000)
 
 })
+
+describe('add rate', () => {
+	test('login one user to add rate', async done => {
+		// start generating a trace file
+		//await page.tracing.start({path: 'trace/add_login_har.json',screenshots: true})
+		await har.start({ path: 'trace/add_add_rate_har_trace.har' })
+		// ARRANGE
+		await page.goto('http://localhost:8080/login?msg=you%20need%20to%20log%20in', { timeout: 30000, waitUntil: 'load' })
+		await page.goto('http://localhost:8080/login?msg=you%20need%20to%20log%20in', { timeout: 30000, waitUntil: 'load' })
+		// take a screenshot and save to the file system
+		await page.screenshot({ path: 'screenshots/loginpagetoquestionrate.png' })
+
+		// ACT
+		// complete the form and click submit
+		await page.type('input[name=user]', 'test')
+		await page.type('input[name=pass]', 'testtest')
+		await page.click('input[type=submit]')
+		await page.waitForSelector('h1')
+        await page.waitFor(1000) // sometimes you need a second delay
+        
+        const heading = await page.evaluate( () => {
+			const dom = document.querySelector('h1')
+			return dom.innerText
+        })
+        
+		expect(heading).toBe('You are logged in. Click this to log out')
+		
+		await page.waitForSelector('h1')
+        await page.waitFor(1000) // sometimes you need a second delay
+		
+		await page.screenshot({ path: 'screenshots/loginpagetoquestioninde.png' })
+
+        await page.type('textarea[name=title]', 'sampleTitle')
+		await page.type('textarea[name=description]', 'sample description')
+		await page.click('input[type=submit]')
+		await page.waitForSelector('h1')
+		await page.waitFor(1000) // sometimes you need a second delay
+        
+		// ASSERT
+
+		await page.goto('http://localhost:8080/question?msg=1', { timeout: 30000, waitUntil: 'load' })
+		await page.goto('http://localhost:8080/question?msg=1', { timeout: 30000, waitUntil: 'load' })
+
+		await page.screenshot({ path: 'screenshots/loginpagetoquestionandrate.png' })
+
+		const heading2 = await page.evaluate( () => {
+			const dom2 = document.querySelector('h1')
+			return dom2.innerText
+        })
+        
+		expect(heading2).toBe('You are viewing a question. Click this to come back to the homepage')
+		
+		await page.waitForSelector('h1')
+		await page.waitFor(1000) // sometimes you need a second delay
+		
+		await page.type('input[name=rate]', '1')
+		await page.waitForSelector('h1')
+		await page.waitFor(1000) // sometimes you need a second delay
+
+		const heading3 = await page.evaluate( () => {
+			const dom3 = document.querySelector('h1')
+			return dom3.innerText
+        })
+        
+		expect(heading3).toBe('You are viewing a question. Click this to come back to the homepage')
+
+		// grab a screenshot
+		const image = await page.screenshot()
+		// compare to the screenshot from the previous test run
+		expect(image).toMatchImageSnapshot()
+		// stop logging to the trace files
+		//await page.tracing.stop()
+		await har.stop()
+		done()
+	}, 16000)
+
+	test('login one user to add too low rate', async done => {
+		// start generating a trace file
+		//await page.tracing.start({path: 'trace/add_login_har.json',screenshots: true})
+		await har.start({ path: 'trace/add_add_rate_har_trace.har' })
+		// ARRANGE
+		await page.goto('http://localhost:8080/login?msg=you%20need%20to%20log%20in', { timeout: 30000, waitUntil: 'load' })
+		await page.goto('http://localhost:8080/login?msg=you%20need%20to%20log%20in', { timeout: 30000, waitUntil: 'load' })
+		// take a screenshot and save to the file system
+		await page.screenshot({ path: 'screenshots/loginpagetoquestionrate.png' })
+
+		// ACT
+		// complete the form and click submit
+		await page.type('input[name=user]', 'test')
+		await page.type('input[name=pass]', 'testtest')
+		await page.click('input[type=submit]')
+		await page.waitForSelector('h1')
+        await page.waitFor(1000) // sometimes you need a second delay
+        
+        const heading = await page.evaluate( () => {
+			const dom = document.querySelector('h1')
+			return dom.innerText
+        })
+        
+		expect(heading).toBe('You are logged in. Click this to log out')
+		
+		await page.waitForSelector('h1')
+        await page.waitFor(1000) // sometimes you need a second delay
+		
+		await page.screenshot({ path: 'screenshots/loginpagetoquestioninde.png' })
+
+        await page.type('textarea[name=title]', 'sampleTitle')
+		await page.type('textarea[name=description]', 'sample description')
+		await page.click('input[type=submit]')
+		await page.waitForSelector('h1')
+		await page.waitFor(1000) // sometimes you need a second delay
+        
+		// ASSERT
+
+		await page.goto('http://localhost:8080/question?msg=1', { timeout: 30000, waitUntil: 'load' })
+		await page.goto('http://localhost:8080/question?msg=1', { timeout: 30000, waitUntil: 'load' })
+
+		await page.screenshot({ path: 'screenshots/loginpagetoquestionandrate.png' })
+
+		const heading2 = await page.evaluate( () => {
+			const dom2 = document.querySelector('h1')
+			return dom2.innerText
+        })
+        
+		expect(heading2).toBe('You are viewing a question. Click this to come back to the homepage')
+		
+		await page.waitForSelector('h1')
+		await page.waitFor(1000) // sometimes you need a second delay
+		
+		await page.type('input[name=rate]', '0')
+		await page.click('input[type=submit]')
+		await page.waitForSelector('h1')
+		await page.waitFor(1000) // sometimes you need a second delay
+
+		const heading3 = await page.evaluate( () => {
+			const dom3 = document.querySelector('h1')
+			return dom3.innerText
+        })
+        
+		expect(heading3).toBe('An Error Has Occurred')
+
+		// grab a screenshot
+		const image = await page.screenshot()
+		// compare to the screenshot from the previous test run
+		expect(image).toMatchImageSnapshot()
+		// stop logging to the trace files
+		//await page.tracing.stop()
+		await har.stop()
+		done()
+	}, 16000)
+
+	test('login one user to add too high rate', async done => {
+		// start generating a trace file
+		//await page.tracing.start({path: 'trace/add_login_har.json',screenshots: true})
+		await har.start({ path: 'trace/add_add_rate_har_trace.har' })
+		// ARRANGE
+		await page.goto('http://localhost:8080/login?msg=you%20need%20to%20log%20in', { timeout: 30000, waitUntil: 'load' })
+		await page.goto('http://localhost:8080/login?msg=you%20need%20to%20log%20in', { timeout: 30000, waitUntil: 'load' })
+		// take a screenshot and save to the file system
+		await page.screenshot({ path: 'screenshots/loginpagetoquestionrate.png' })
+
+		// ACT
+		// complete the form and click submit
+		await page.type('input[name=user]', 'test')
+		await page.type('input[name=pass]', 'testtest')
+		await page.click('input[type=submit]')
+		await page.waitForSelector('h1')
+        await page.waitFor(1000) // sometimes you need a second delay
+        
+        const heading = await page.evaluate( () => {
+			const dom = document.querySelector('h1')
+			return dom.innerText
+        })
+        
+		expect(heading).toBe('You are logged in. Click this to log out')
+		
+		await page.waitForSelector('h1')
+        await page.waitFor(1000) // sometimes you need a second delay
+		
+		await page.screenshot({ path: 'screenshots/loginpagetoquestioninde.png' })
+
+        await page.type('textarea[name=title]', 'sampleTitle')
+		await page.type('textarea[name=description]', 'sample description')
+		await page.click('input[type=submit]')
+		await page.waitForSelector('h1')
+		await page.waitFor(1000) // sometimes you need a second delay
+        
+		// ASSERT
+
+		await page.goto('http://localhost:8080/question?msg=1', { timeout: 30000, waitUntil: 'load' })
+		await page.goto('http://localhost:8080/question?msg=1', { timeout: 30000, waitUntil: 'load' })
+
+		await page.screenshot({ path: 'screenshots/loginpagetoquestionandrate.png' })
+
+		const heading2 = await page.evaluate( () => {
+			const dom2 = document.querySelector('h1')
+			return dom2.innerText
+        })
+        
+		expect(heading2).toBe('You are viewing a question. Click this to come back to the homepage')
+		
+		await page.waitForSelector('h1')
+		await page.waitFor(1000) // sometimes you need a second delay
+		
+		await page.type('input[name=rate]', '6')
+		await page.click('input[type=submit]')
+		await page.waitForSelector('h1')
+		await page.waitFor(1000) // sometimes you need a second delay
+
+		const heading3 = await page.evaluate( () => {
+			const dom3 = document.querySelector('h1')
+			return dom3.innerText
+        })
+        
+		expect(heading3).toBe('An Error Has Occurred')
+
+		// grab a screenshot
+		const image = await page.screenshot()
+		// compare to the screenshot from the previous test run
+		expect(image).toMatchImageSnapshot()
+		// stop logging to the trace files
+		//await page.tracing.stop()
+		await har.stop()
+		done()
+	}, 16000)
+
+	test('login one user to add missing rate', async done => {
+		// start generating a trace file
+		//await page.tracing.start({path: 'trace/add_login_har.json',screenshots: true})
+		await har.start({ path: 'trace/add_add_rate_har_trace.har' })
+		// ARRANGE
+		await page.goto('http://localhost:8080/login?msg=you%20need%20to%20log%20in', { timeout: 30000, waitUntil: 'load' })
+		await page.goto('http://localhost:8080/login?msg=you%20need%20to%20log%20in', { timeout: 30000, waitUntil: 'load' })
+		// take a screenshot and save to the file system
+		await page.screenshot({ path: 'screenshots/loginpagetoquestionrate.png' })
+
+		// ACT
+		// complete the form and click submit
+		await page.type('input[name=user]', 'test')
+		await page.type('input[name=pass]', 'testtest')
+		await page.click('input[type=submit]')
+		await page.waitForSelector('h1')
+        await page.waitFor(1000) // sometimes you need a second delay
+        
+        const heading = await page.evaluate( () => {
+			const dom = document.querySelector('h1')
+			return dom.innerText
+        })
+        
+		expect(heading).toBe('You are logged in. Click this to log out')
+		
+		await page.waitForSelector('h1')
+        await page.waitFor(1000) // sometimes you need a second delay
+		
+		await page.screenshot({ path: 'screenshots/loginpagetoquestioninde.png' })
+
+        await page.type('textarea[name=title]', 'sampleTitle')
+		await page.type('textarea[name=description]', 'sample description')
+		await page.click('input[type=submit]')
+		await page.waitForSelector('h1')
+		await page.waitFor(1000) // sometimes you need a second delay
+        
+		// ASSERT
+
+		await page.goto('http://localhost:8080/question?msg=1', { timeout: 30000, waitUntil: 'load' })
+		await page.goto('http://localhost:8080/question?msg=1', { timeout: 30000, waitUntil: 'load' })
+
+		await page.screenshot({ path: 'screenshots/loginpagetoquestionandrate.png' })
+
+		const heading2 = await page.evaluate( () => {
+			const dom2 = document.querySelector('h1')
+			return dom2.innerText
+        })
+        
+		expect(heading2).toBe('You are viewing a question. Click this to come back to the homepage')
+		
+		await page.waitForSelector('h1')
+		await page.waitFor(1000) // sometimes you need a second delay
+		
+		await page.type('input[name=rate]', '')
+		await page.click('input[type=submit]')
+		await page.waitForSelector('h1')
+		await page.waitFor(1000) // sometimes you need a second delay
+
+		const heading3 = await page.evaluate( () => {
+			const dom3 = document.querySelector('h1')
+			return dom3.innerText
+        })
+        
+		expect(heading3).toBe('An Error Has Occurred')
+
+		// grab a screenshot
+		const image = await page.screenshot()
+		// compare to the screenshot from the previous test run
+		expect(image).toMatchImageSnapshot()
+		// stop logging to the trace files
+		//await page.tracing.stop()
+		await har.stop()
+		done()
+	}, 16000)
+
+	test('login one user to add too string as rate', async done => {
+		// start generating a trace file
+		//await page.tracing.start({path: 'trace/add_login_har.json',screenshots: true})
+		await har.start({ path: 'trace/add_add_rate_har_trace.har' })
+		// ARRANGE
+		await page.goto('http://localhost:8080/login?msg=you%20need%20to%20log%20in', { timeout: 30000, waitUntil: 'load' })
+		await page.goto('http://localhost:8080/login?msg=you%20need%20to%20log%20in', { timeout: 30000, waitUntil: 'load' })
+		// take a screenshot and save to the file system
+		await page.screenshot({ path: 'screenshots/loginpagetoquestionrate.png' })
+
+		// ACT
+		// complete the form and click submit
+		await page.type('input[name=user]', 'test')
+		await page.type('input[name=pass]', 'testtest')
+		await page.click('input[type=submit]')
+		await page.waitForSelector('h1')
+        await page.waitFor(1000) // sometimes you need a second delay
+        
+        const heading = await page.evaluate( () => {
+			const dom = document.querySelector('h1')
+			return dom.innerText
+        })
+        
+		expect(heading).toBe('You are logged in. Click this to log out')
+		
+		await page.waitForSelector('h1')
+        await page.waitFor(1000) // sometimes you need a second delay
+		
+		await page.screenshot({ path: 'screenshots/loginpagetoquestioninde.png' })
+
+        await page.type('textarea[name=title]', 'sampleTitle')
+		await page.type('textarea[name=description]', 'sample description')
+		await page.click('input[type=submit]')
+		await page.waitForSelector('h1')
+		await page.waitFor(1000) // sometimes you need a second delay
+        
+		// ASSERT
+
+		await page.goto('http://localhost:8080/question?msg=1', { timeout: 30000, waitUntil: 'load' })
+		await page.goto('http://localhost:8080/question?msg=1', { timeout: 30000, waitUntil: 'load' })
+
+		await page.screenshot({ path: 'screenshots/loginpagetoquestionandrate.png' })
+
+		const heading2 = await page.evaluate( () => {
+			const dom2 = document.querySelector('h1')
+			return dom2.innerText
+        })
+        
+		expect(heading2).toBe('You are viewing a question. Click this to come back to the homepage')
+		
+		await page.waitForSelector('h1')
+		await page.waitFor(1000) // sometimes you need a second delay
+		
+		await page.type('input[name=rate]', 'string')
+		await page.click('input[type=submit]')
+		await page.waitForSelector('h1')
+		await page.waitFor(1000) // sometimes you need a second delay
+
+		const heading3 = await page.evaluate( () => {
+			const dom3 = document.querySelector('h1')
+			return dom3.innerText
+        })
+        
+		expect(heading3).toBe('An Error Has Occurred')
+
+		// grab a screenshot
+		const image = await page.screenshot()
+		// compare to the screenshot from the previous test run
+		expect(image).toMatchImageSnapshot()
+		// stop logging to the trace files
+		await page.tracing.stop()
+		await har.stop()
+		done()
+	}, 16000)
+
+})
