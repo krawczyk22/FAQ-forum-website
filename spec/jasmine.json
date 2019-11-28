@@ -1,0 +1,9 @@
+{
+	"spec_files": [
+    "unit tests/comment.spec.js",
+    "unit tests/contribution.spec.js",
+    "unit tests/question.spec.js",
+    "unit tests/rate.spec.js",
+    "unit tests/user.spec.js"
+	]
+}

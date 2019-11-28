@@ -12,7 +12,9 @@
     "jsdoc": "node_modules/.bin/jsdoc -c jsdoc.conf",
     "linter": "node_modules/.bin/eslint .",
     "test": "jest --coverage --detectOpenHandles",
-    "unit": "node_modules/.bin/jest --coverage --runInBand tests/unit/"
+    "unit": "node_modules/.bin/jest --coverage --runInBand tests/unit/",
+    "coverage": "node_modules/.bin/istanbul cover spec/testRunner.js",
+    "check-coverage": "node_modules/.bin/istanbul check-coverage --statement 100 --branch 100 --function 100 --line 100"
   },
   "jest": {
     "projects": [
@@ -26,6 +28,9 @@
     "bcrypt-promise": "^2.0.0",
     "fs-extra": "^7.0.1",
     "handlebars": "^4.1.2",
+    "istanbul": "^0.4.5",
+    "jasmine": "^3.5.0",
+    "jasmine-console-reporter": "^3.1.0",
     "jest-image-snapshot": "^2.11.1",
     "koa": "^2.8.2",
     "koa-body": "^4.0.8",
