@@ -1,4 +1,4 @@
-Frequently Asked Questions forum website
+# Frequently Asked Questions forum website
 
 ## Functionality
 <ol>
