@@ -1,5 +1,5 @@
 # Frequently Asked Questions forum website
-
+The university knowledge-base system where users can post and answer questions has been created in accordance with the guidelines set out in the brief. 
 ## Functionality
 <ol>
   <li>Without logging in a user can view all the question titles and dates on the homepage but will not see the button that allows them to ask a new question.</li>
@@ -27,3 +27,15 @@
     <li>The top 50% are flagged as bronze star users.</li>
   </ol>
 </ol>
+
+## Presentation
+<table style="width:100%">
+  <tr>
+    <td><img src="public/showcase/Logged.png" width="400"></td>
+    <td><img src="public/showcase/NotLogged.png" width="400"></td>
+  </tr>
+  <tr>
+    <td><img src="public/showcase/QuestionView.png" width="400"></td>
+    <td><img src="public/showcase/UnitTesting.png" width="400"></td>
+  </tr>
+</table>
