@@ -1,25 +1,29 @@
-# Assignment Template
+# Frequently Asked Questions forum website
 
-This repository contains the base files for the assignment. You will need to create a _private duplicate_ in your module organisation. Carry out the following steps, taken from the [GitHub documentation](https://help.github.com/en/enterprise/2.16/user/articles/duplicating-a-repository):
-
-Temporarily clone this repository to your development computer. This will create a directory on your computer called `temp` which contains the repository files:
-
-`git clone https://github.coventry.ac.uk/web/template-dynamic-websites.git temp`
-
-Create a new **private** repository in the module organisation on the GitHub server and copy the _clone url_ to the clipboard (the one that begins with `https://` and ends in `.git`. The repository name should be your username (the one you use to log into the University computers).
-
-Mirror Push to this new repository, replacing xxx with the url from the clipboard making sure you are _in_ the `temp/` directory:
-
-`cd temp/ && git push --mirror xxx`
-
-Once you are sure the code is in your new repository, delete the temporary local repository.
-
-`cd .. && rm -rf temp/`
-
-Your private repository on GitHub will now contain a complete copy of this template including the commits that were already made. You can now start your assignment by carrying out the following steps:
-
-Clone your private repository
-
-Change your [local config settings](https://git-scm.com/book/en/v2/Getting-Started-First-Time-Git-Setup). This is a vital step otherwise your commits won't show on the GitHub _graph_ and your grade will be affected.
-
-Start working on the assignment.
+## Functionality
+<ol>
+  <li>Without logging in a user can view all the question titles and dates on the homepage but will not see the button that allows them to ask a new question.</li>
+  <li>Clicking on a question title takes the user to a details page where they can see the question details together with any answers supplied by other users however until they are logged in they won't see the reply button.</li>
+  <li>If a user logs in they should see a button that allows them to add a new question. This will take them to a new screen where they will be asked for:</li>
+  <ol>
+    <li>A short title.</li>
+    <li>A detailed description of the problem.</li>
+    <li>An optional photo or screenshot.</li>
+  </ol>
+  <li>If a logged in user views a question details page they will see a form containing a text area at the bottom of the page where they can add their answer.</li>
+  <li>The optional screenshot should be displayed as a low-resolution thumbnail.</li>
+  <li>Clicking on the thumbnail should display the full-resolution image.</li>
+  <li>The person who posted the original question can flag one of the answers as the correct one.</li>
+  <li>This correct answer should be flagged on the details page.</li>
+  <li>On the home page any question that has a correct answer flag should be indicated as 'solved' on the homepage.</li>
+  <li>Any logged in user can rate any answer that they did not provide on a scale of 1-5 stars.</li>
+  <li>Every user start off with a contribution score of 0.</li>
+  <li>Logged in users can flag answers as off topic or inappropriate. This takes 5 points off the poster's score.</li>
+  <li>Every answer flagged as correct adds 50 points to the posting person's contribution score.</li>
+  <li>The best users are flagged with a gold, silver or bronze start:</li>
+  <ol>
+    <li>The top 5% of users are flagged with a gold star.</li>
+    <li>The top 25% are flagged as silver.</li>
+    <li>The top 50% are flagged as bronze star users.</li>
+  </ol>
+</ol>
